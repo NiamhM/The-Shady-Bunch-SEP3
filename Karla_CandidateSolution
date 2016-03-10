@@ -1,0 +1,72 @@
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Random;
+import java.util.Vector; 
+
+public class CandidateSolution {
+	private PreferenceTable p1;
+	private Vector<CandidateAssignment> allCandidates;
+	private static Random RND = new Random();
+	private Hashtable candidateHash = new Hashtable();
+	private static final int PENALTY = 1000;
+	private Hashtable preferenceHash = new Hashtable();
+
+	public CandidateSolution(PreferenceTable prefTable) {
+		p1 = prefTable;
+		Vector<CandidateAssignment> newvec = new Vector<CandidateAssignment>();
+		int i = 0;
+		candidateHash = p1.getAllStudentEntries();
+		Iterator it = candidateHash.entrySet().iterator();
+		while (it.hasNext()){
+			Map.Entry pair = (Map.Entry)it.next();
+			CandidateAssignment randcand = new CandidateAssignment((StudentEntry) pair.getValue());
+			try{ 
+				newvec.add(randcand);
+			} catch(NullPointerException e)
+			{
+				throw new IllegalStateException ("a canadidate is null");
+			}			
+		}
+		allCandidates = newvec;
+	}
+	
+	public int getRanking(){
+		
+		int totalEnergy = 0, totalPenalties=0;
+		for (int i=0; i<allCandidates.size(); i++)
+		{
+			if(preferenceHash.containsKey(allCandidates.elementAt(i).getAssignedProject())){
+			 totalPenalties = totalPenalties + 1;
+			}
+			preferenceHash.put(allCandidates.elementAt(i).getAssignedProject(), allCandidates.elementAt(i));
+			int energy = allCandidates.elementAt(i).getEnergy();
+			totalEnergy = totalEnergy + energy;
+		}
+		preferenceHash.clear();
+		totalEnergy = totalEnergy + (totalPenalties*PENALTY);
+		return totalEnergy;
+	}
+	
+	public int getFitness(){
+		return getRanking()*-1;
+	}
+	
+	public CandidateAssignment getAssignmentFor(String name){
+		StudentEntry tempStudent = (StudentEntry) candidateHash.get(name);
+		for (int i=0; i<allCandidates.size(); i++){	
+			if (tempStudent.equals(allCandidates.elementAt(i).getStudentEntry())){
+				return allCandidates.elementAt(i);
+			}
+		}
+		return null;
+		
+	}
+	
+	public String getRandomAssignment(){
+		int randomAssignment = RND.nextInt(51);
+		CandidateAssignment randomCandidate = allCandidates.elementAt(randomAssignment);
+		return randomCandidate.getAssignedProject();
+	}
+
+}
