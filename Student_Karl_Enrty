@@ -1,0 +1,112 @@
+import java.io.*;
+import java.util.Random;
+import java.util.Vector;
+public class StudentEntry {
+	private String sName;
+	private boolean hasPreassigned;
+	private int numOfPrefs;
+	private Vector<String> projectVector = new Vector<String>();
+	private Vector<Vector<String>> seVector = PreferenceTable.getVector();
+	private Random RND = new Random();
+	
+	public StudentEntry(String studentName){
+		sName = studentName;
+		for (Vector<String>row : seVector){
+			if (row.elementAt(0).equalsIgnoreCase(sName))
+			{
+				for(int i = 0; i < row.size()-2; i++){
+					if(!(projectVector.contains(row.elementAt(i+2))))
+					{
+						
+						projectVector.add(row.elementAt(i+2));
+						//System.out.println(row.elementAt(i+2));
+					}
+				}
+				//System.out.println(row.elementAt(1));
+				if (row.elementAt(1).equalsIgnoreCase("Yes"))
+				{
+					hasPreassigned = true;
+				}
+				else
+				{
+					hasPreassigned = false;
+				}
+				numOfPrefs = row.size()-2;
+			}
+		}
+		
+	}
+	
+	public String getStudentName(){
+			
+		//	returns	a	String	containing	the	name	of	this	particular	student
+		return sName;
+	}
+	
+	public static String getRandomPreference()
+	{	
+		StudentEntry randomStudent = PreferenceTable.getRandomStudent();//find a random student
+		return PreferenceTable.getRandomPreference(randomStudent);//get a random preference of that student
+	}
+	
+	public Vector<String> getVector()
+	{
+		return projectVector;
+	}
+	
+	public boolean hasPreference(String testPref){
+		if (projectVector.contains(testPref)){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	
+	public int getRanking(String pref){
+		if (projectVector.contains(pref)){
+			for (int i=0; i<10; i++){
+				if (projectVector.elementAt(i).equals(pref)){
+					return i;
+				}
+			}
+		}
+		return -1;
+	}
+	public Vector<String> getOrderedPreference(){
+		return projectVector;
+		//	is	a	public	method	that	returns	a	list	of	project	names	(Strings)	
+		//for	which	the	student	has	expressed	a	preference,	in	order	of	preference.
+	}
+	
+	public boolean preassignProject(){
+		if (projectVector.size() == 1)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		//is	a	public	method	that	ensures	that	a	student’s	list	has	
+		//only	one	preference,	and	records	internally	that	thus	preference	has	been	pre-assigned
+	}
+	
+	public boolean hasPreassignedProject(){
+		return hasPreassigned;
+		//is	a	public	method	that	returns	true if	a	project	is	pre-assigned.
+	}
+	
+	public int getNumberOfStatedPreferences(){
+
+		//is	 a	 public	method	 that	 returns	 an	int indicating the	
+		//original	number	of	project	preferences	that	were	explicitly	stated	in	the	preference	file.
+		return numOfPrefs;
+	}
+	
+	public void addProject(String projectName){
+		projectVector.add(projectName);
+		//is	a	public	method	 that	assigns	an	extra	project	 to	 the	end	of	
+		//the	student’s	preferences	list	(without	increasing	the	int returned	by	the	method	above)
+	}
+}
