@@ -1,0 +1,34 @@
+public class CandidateAssignment {
+	private StudentEntry candidate;
+	private String candidatePreference = "";
+	private String previousPreference = "";
+	public CandidateAssignment(StudentEntry tempStudent){
+		candidate = tempStudent;
+		randomAssignment(candidate);
+	}
+	
+	public void randomAssignment(StudentEntry tempStudent){
+		previousPreference = candidatePreference;
+		candidatePreference = PreferenceTable.getRandomPreference(tempStudent);
+	}
+	
+	public void undoChange(StudentEntry tempStudent){
+		candidatePreference = previousPreference;
+		previousPreference = "";
+	}
+	
+	public StudentEntry getStudentEntry(){
+		return candidate;
+	}
+	
+	public int getEnergy(){
+		String gap = getAssignedProject();
+		int temp = candidate.getRanking(gap);
+		int energy = (temp*temp) +1;
+		return energy;
+	}
+	
+	public String getAssignedProject(){
+		return candidatePreference;
+	}
+}
