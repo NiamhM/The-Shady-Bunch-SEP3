@@ -57,7 +57,7 @@ public class CandidateSolution {
 	
 	public float getFitness(){
 		float energy = getEnergy();
-		float fitness = 1/energy;
+		float fitness = energy*(-1);
 		return fitness;
 	}
 }
