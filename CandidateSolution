@@ -4,7 +4,7 @@ import java.util.Vector;
 
 public class CandidateSolution {
 	PreferenceTable pref;
-	private Vector<CandidateAssignment> allCands = new Vector<CandidateAssignment>();
+	private Vector<CandidateAssignment> allCandidates = new Vector<CandidateAssignment>();
 	private static final int DUPLICATE_PROJECT_PENALTY = 1000;
 	public CandidateSolution(PreferenceTable p){
 		pref  = p;
@@ -16,15 +16,15 @@ public class CandidateSolution {
 		Vector<StudentEntry> studentEntryList = pref.getAllStuderntEntries();
 		for(StudentEntry student : studentEntryList){		//creating list of candidate assignments
 			CandidateAssignment cand = new CandidateAssignment(student);
-			allCands.addElement(cand);
+			allCandidates.addElement(cand);
 		}
 	}
 	
 	public String getAssignmentFor(String studentName){
-		Hashtable<String, StudentEntry> myhash = pref.getHashtable();
-		StudentEntry student = myhash.get(studentName);
+		Hashtable<String, StudentEntry> myHash = pref.getHashtable();
+		StudentEntry student = myHash.get(studentName);
 		String assignment = "";
-		for(CandidateAssignment can : allCands){
+		for(CandidateAssignment can : allCandidates){
 			if(can.getStudentEntry().equals(student)){
 				assignment = can.getAssignedProject();
 			}
@@ -38,12 +38,12 @@ public class CandidateSolution {
 	}
 	
 	public int getEnergy(){
-		int energy =0;
-		int penalty =0;
+		int energy = 0;
+		int penalty = 0;
 		String project;
 		Hashtable<StudentEntry,String> hash = new Hashtable<StudentEntry,String>();
 		
-		for(CandidateAssignment cand: allCands){
+		for(CandidateAssignment cand: allCandidates){
 			energy = energy + cand.getEnergy();
 			project = cand.getAssignedProject();
 			if(hash.containsValue(project)){ 
@@ -55,9 +55,9 @@ public class CandidateSolution {
 		return energy;
 	}
 	
-	public float getFitness(){
-		float energy = getEnergy();
-		float fitness = energy*(-1);
+	public int getFitness(){
+		int energy = getEnergy();
+		int fitness = energy*(-1);
 		return fitness;
 	}
 }
