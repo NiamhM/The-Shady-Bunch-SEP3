@@ -1,11 +1,16 @@
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.*;
+
+import javax.swing.text.html.StyleSheet.ListPainter;
 public class PreferenceTable {
 
 	private static Vector<Vector<String>> fileContents; 
 	private static Hashtable<String, StudentEntry> studentDetails = new Hashtable<String, StudentEntry>();
 	private Random RND = new Random();
 	private BufferedReader bRead;
+	private static ArrayList<String> preassignedList = new ArrayList<>();
+
 	public PreferenceTable() { 
 
 	}
@@ -104,35 +109,58 @@ public class PreferenceTable {
 	public Hashtable<String, StudentEntry> getHashtable(){
 		return studentDetails;
 	}
-	
-	public TreeMap<String, Integer> getAllProjectsByPopularity(){
+
+	public TreeMap<String, Integer> getAllProjects(){
 		TreeMap<String, Integer> projectPopularity = new TreeMap<String, Integer>();
 		Vector<StudentEntry> allStudents = getAllStuderntEntries();
-			for (int i=0; i<allStudents.size(); i++){
-				 Vector selectedPreferences = allStudents.elementAt(i).getOrderedPreference();
-				 for (int j=0; j<selectedPreferences.size(); j++){
-					 if (!(projectPopularity.containsKey(selectedPreferences.elementAt(j)))){
-						 projectPopularity.put((String) selectedPreferences.elementAt(j), 1);
-					 }
-					 else{
-						 int newValue = projectPopularity.get(selectedPreferences.elementAt(j)) +1;
-						 projectPopularity.replace((String) selectedPreferences.elementAt(j), projectPopularity.get(selectedPreferences.elementAt(j)), newValue);
-					 }
-						 
-				 }
-
+		for (int i=0; i<allStudents.size(); i++){
+			Vector<String> selectedPreferences = allStudents.elementAt(i).getOrderedPreference();
+			for (int j=0; j<selectedPreferences.size(); j++){
+				if (!(projectPopularity.containsKey(selectedPreferences.elementAt(j)))){
+					projectPopularity.put((String) selectedPreferences.elementAt(j), 1);
+				}
+				else{
+					int newValue = projectPopularity.get(selectedPreferences.elementAt(j)) +1;
+					projectPopularity.replace((String) selectedPreferences.elementAt(j), projectPopularity.get(selectedPreferences.elementAt(j)), newValue);
+				}
 			}
-		      Set set = projectPopularity.entrySet();
-		      // Get an iterator
-		      Iterator iter = set.iterator();
-		      // Display elements
-		      while(iter.hasNext()) {
-		        Map.Entry me = (Map.Entry)iter.next();
-		        System.out.print(me.getKey() + ": ");
-		        System.out.println(me.getValue());
-		      }
-			return projectPopularity;
-				
+		}
+		Set set = projectPopularity.entrySet();
+		// Get an iterator
+		Iterator iter = set.iterator();
+		// Display elements
+
+		while(iter.hasNext()) {
+			Map.Entry me = (Map.Entry)iter.next();
+			//						System.out.print(me.getKey() + ": ");
+			//						System.out.println(me.getValue());
+		}
+		return projectPopularity;
+	}
+
+	public static void makePreassignedProjectList(String pName){
+		preassignedList.add(pName);
+	}
+
+	public ArrayList<String> listProjects(String choice){
+		//When the button is pressed it will pass it a choice
+		ArrayList<String> projectList = new ArrayList<>();
+		projectList.addAll(getAllProjects().keySet()); //Only want the project names
+
+
+		if(choice.equalsIgnoreCase("Preassigned")){
+			return preassignedList;
+		}
+		else if(choice.equalsIgnoreCase("Non-Preassigned")){
+			for(int i = 0; i < projectList.size(); i++){
+				if(preassignedList.contains(projectList.get(i))){
+					projectList.remove(i);
+				}
+			}
+		}
+		for(int i = 0; i < projectList.size(); i++){
+		}
+		return projectList;
 	}
 
 	public static void main(String[] args) throws IOException {
@@ -158,7 +186,15 @@ public class PreferenceTable {
 
 		System.out.println("Energy of the Candidate Solution is: " + solution.getEnergy());
 		System.out.println("Fitness of the Candidate Solution is: " + solution.getFitness());
-		System.out.println("Ordered Projects: " + table.getAllProjectsByPopularity());
-		table.getAllProjectsByPopularity();
+		System.out.println("\nOrdered Projects: " + table.getAllProjects());
+		table.getAllProjects();
+
+		System.out.println("\n\n");
+		table.getAllStuderntEntries();
+		ArrayList<String> list = new ArrayList<>();
+		list = table.listProjects("Preassigned");
+		for(int i = 0; i < list.size(); i++){
+			System.out.println(list.get(i));
+		}
 	}
 }
