@@ -7,7 +7,7 @@ public class StudentEntry {
 	private Vector<String> orderedPreferences = new Vector<String>();
 	Vector<Vector<String>> PT =  PreferenceTable.getPrefTable();
 	private Random RND = new Random();
-	
+
 	public StudentEntry(String sName){
 		studentName = sName;
 		for(Vector<String> row: PT){
@@ -23,7 +23,9 @@ public class StudentEntry {
 						orderedPreferences.clear();
 						orderedPreferences.add(assignedProject);
 					}
-						hasPreassignedProject = true;
+					hasPreassignedProject = true;
+					PreferenceTable.makePreassignedProjectList(orderedPreferences.firstElement());
+					//Making a preassigned list for printing. This will fill up as every student is created.
 				}
 				else{
 					hasPreassignedProject = false;
@@ -32,30 +34,30 @@ public class StudentEntry {
 		}
 		numberOfStatedPreferences = orderedPreferences.size();
 	}
-	
+
 	public String getStudentName(){
 		return studentName;
 	}
-	
+
 	public Vector<String> getOrderedPreference(){
 		return orderedPreferences;
 	}
-	
+
 	public boolean preassignedProject(String pname){ //only has one preference and records it 
 		if(hasPreassignedProject && (orderedPreferences.size() == 1) && (orderedPreferences.firstElement().equalsIgnoreCase(pname))){
 			return hasPreassignedProject;
 		}
 		else return false;
 	}
-	
+
 	public boolean hasPreassignedProject(){
 		return hasPreassignedProject;	
 	}
-	
+
 	public int getNumberOfStatedPreferences(){
 		return numberOfStatedPreferences; 
 	}
-	
+
 	public void addPoject(String pName){
 		for(int i= 0; i< orderedPreferences.size(); i++){
 			String project = orderedPreferences.elementAt(i);
@@ -65,13 +67,13 @@ public class StudentEntry {
 			}
 		}
 	}
-	
+
 	public String getRandomPreference(){
 		int num = RND.nextInt(orderedPreferences.size()); //get random number between 0 and number of projects
 		String randomPreference = orderedPreferences.get(num);
 		return randomPreference;
 	}
-	
+
 	public boolean hasPreference(String pref){
 		if(orderedPreferences.contains(pref)){
 			return true;
@@ -80,7 +82,7 @@ public class StudentEntry {
 			return false;
 		}
 	}
-	
+
 	public int getRanking(String Project){
 		int rank =0;
 		if(orderedPreferences.contains(Project)){
@@ -90,5 +92,5 @@ public class StudentEntry {
 		}
 		return rank;
 	}
-	
+
 }
