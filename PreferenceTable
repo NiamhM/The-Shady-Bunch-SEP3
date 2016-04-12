@@ -162,6 +162,43 @@ public class PreferenceTable {
 		}
 		return projectList;
 	}
+	
+	private String[] numericalSort(TreeMap<String, Integer> map) {
+		String[] keys = new String[map.size()];
+		int[] values = new int[map.size()];
+		int index = 0;
+		TreeMap<String, Integer> treeMap= new TreeMap<String, Integer>();
+		treeMap = map;
+		System.out.println(map);
+
+		for(Map.Entry<String,Integer> mapEntry : map.entrySet()) {
+		    keys[index] = mapEntry.getKey();
+		    values[index] = mapEntry.getValue();
+		    index++;
+		}
+		for (int i = 0; i < values.length; i++)
+		{
+		       for(int j = i+1; j < values.length; j++)
+		       {
+		                if(values[i] > values[j])
+		                {
+		                       int tempVal = values[j];
+		                       values[j]= values[i];
+		                       values[i] = tempVal;
+		                       
+		                       String tempStr = keys[j];
+		                       keys[j] = keys[i];
+		                       keys[i] = tempStr;
+		                }
+		       }
+		}
+		String sortedList[] = new String[keys.length];
+		for (int i=0; i<values.length; i++){
+			sortedList[i] = keys[i] + " : " + values[i];
+		}
+		return sortedList;
+	}
+
 
 	public static void main(String[] args) throws IOException {
 		PreferenceTable table = new PreferenceTable("Project allocation Data.TSV");
@@ -187,6 +224,13 @@ public class PreferenceTable {
 		System.out.println("Energy of the Candidate Solution is: " + solution.getEnergy());
 		System.out.println("Fitness of the Candidate Solution is: " + solution.getFitness());
 		System.out.println("\nOrdered Projects: " + table.getAllProjects());
+		TreeMap <String, Integer> orderedProjects = new TreeMap<String, Integer>();
+		orderedProjects = table.getAllProjects();
+		String[] numOrderedProjects = table.numericalSort(orderedProjects);
+		System.out.println("Numerically ordered projects: ");
+		for (int i = 0; i< numOrderedProjects.length; i++){
+			System.out.println(numOrderedProjects[i]);
+		}
 		table.getAllProjects();
 
 		System.out.println("\n\n");
@@ -198,3 +242,4 @@ public class PreferenceTable {
 		}
 	}
 }
+
