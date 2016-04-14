@@ -10,6 +10,7 @@ public class PreferenceTable {
 	private Random RND = new Random();
 	private BufferedReader bRead;
 	private static ArrayList<String> preassignedList = new ArrayList<>();
+	private static Vector<String> allPreassignedProjects = new Vector<String>();
 
 	public PreferenceTable() { 
 
@@ -90,13 +91,25 @@ public class PreferenceTable {
 		return randomPreference;
 	}
 
-	public void fillPreferencesOfAll(int maxPrefs){
+	public void fillPreferencesOfAll(int maxPrefs, TreeMap <String, Integer> map){
 		Vector<StudentEntry> allStudents = getAllStuderntEntries();
 		for(StudentEntry student: allStudents){
 			Vector<String> prefs = student.getOrderedPreference();
 			if(student.hasPreassignedProject() == false){ //if they dont have a preassigned project
 				while(prefs.size() < maxPrefs){
-					student.addPoject(getRandomPreference());
+					//student.addPoject(getRandomPreference());
+					int min = 100;
+					String leastDesirable = null;
+					for(Map.Entry<String,Integer> mapEntry : map.entrySet()) {
+						if (!(allPreassignedProjects.contains(mapEntry.getKey()))){
+							if(mapEntry.getValue()<min){
+								min = mapEntry.getValue();
+								map.replace(mapEntry.getKey(), min, min+1);
+								leastDesirable = mapEntry.getKey();
+							}
+						}
+					}
+				student.addPoject(leastDesirable);
 				}
 			}	
 		}
@@ -167,10 +180,6 @@ public class PreferenceTable {
 		String[] keys = new String[map.size()];
 		int[] values = new int[map.size()];
 		int index = 0;
-		TreeMap<String, Integer> treeMap= new TreeMap<String, Integer>();
-		treeMap = map;
-		System.out.println(map);
-
 		for(Map.Entry<String,Integer> mapEntry : map.entrySet()) {
 		    keys[index] = mapEntry.getKey();
 		    values[index] = mapEntry.getValue();
@@ -198,48 +207,67 @@ public class PreferenceTable {
 		}
 		return sortedList;
 	}
-
+	
+	public Vector<String> findPreassignedProjects(Vector<StudentEntry> allEntries){
+		Vector<String> preassignedProjects = new Vector<String>();
+		Vector<String> orderedPreferences = new Vector<String>();
+		for (int i=0; i<allEntries.size(); i++){
+			if(allEntries.elementAt(i).hasPreassignedProject()){
+				orderedPreferences = allEntries.elementAt(i).getOrderedPreference();
+				preassignedProjects.addElement(orderedPreferences.firstElement());
+			}
+		}
+		return preassignedProjects;
+	}
 
 	public static void main(String[] args) throws IOException {
 		PreferenceTable table = new PreferenceTable("Project allocation Data.TSV");
 		CandidateSolution solution = new CandidateSolution(table);
-		table.fillPreferencesOfAll(10);		
+		//table.fillPreferencesOfAll(10);		
 		StudentEntry student = new StudentEntry("Hellboy");
 		CandidateAssignment cand = new CandidateAssignment(student);	
 
-		System.out.println(student.getOrderedPreference());
-
-		System.out.println("\nStudent name: "+ student.getStudentName());
-		System.out.println("Ranking for project 'Recommending Movies Using Curated IMDb Lists' is: "+student.getRanking("Recommending Movies Using Curated IMDb Lists"));
-		System.out.println("Ranking for project 'Spotting Plagiarised Essays Economically' is: "+student.getRanking("Spotting Plagiarised Essays Economically"));
-		System.out.println("Ranking for project 'Learning to play Whist by Bayesian Network' is: "+student.getRanking("Learning to play Whist by Bayesian Network  "));		
-		System.out.println("Ranking for project 'Script Buddy' is: " + student.getRanking("Script Buddy") + "\n");
-
-		System.out.println("CandidateAssignment name" + cand.getStudentEntry().getStudentName());
-		System.out.println("Energy for assigned project " + cand.getAssignedProject() + " is: " + cand.getEnergy());
-		System.out.println("Assigning new random project");
-		cand.randomiseAssignment();
-		System.out.println("\nEnergy for assigned project " + cand.getAssignedProject() + " is: " + cand.getEnergy());
-
+//		System.out.println(student.getOrderedPreference());
+//
+//		System.out.println("\nStudent name: "+ student.getStudentName());
+//		System.out.println("Ranking for project 'Recommending Movies Using Curated IMDb Lists' is: "+student.getRanking("Recommending Movies Using Curated IMDb Lists"));
+//		System.out.println("Ranking for project 'Spotting Plagiarised Essays Economically' is: "+student.getRanking("Spotting Plagiarised Essays Economically"));
+//		System.out.println("Ranking for project 'Learning to play Whist by Bayesian Network' is: "+student.getRanking("Learning to play Whist by Bayesian Network  "));		
+//		System.out.println("Ranking for project 'Script Buddy' is: " + student.getRanking("Script Buddy") + "\n");
+//
+//		System.out.println("CandidateAssignment name" + cand.getStudentEntry().getStudentName());
+//		System.out.println("Energy for assigned project " + cand.getAssignedProject() + " is: " + cand.getEnergy());
+//		System.out.println("Assigning new random project");
+//		cand.randomiseAssignment();
+//		System.out.println("\nEnergy for assigned project " + cand.getAssignedProject() + " is: " + cand.getEnergy());
+		Vector<StudentEntry> allStudents = table.getAllStuderntEntries();
+		allPreassignedProjects = table.findPreassignedProjects(allStudents);
+		System.out.println(allPreassignedProjects);
 		System.out.println("Energy of the Candidate Solution is: " + solution.getEnergy());
 		System.out.println("Fitness of the Candidate Solution is: " + solution.getFitness());
 		System.out.println("\nOrdered Projects: " + table.getAllProjects());
 		TreeMap <String, Integer> orderedProjects = new TreeMap<String, Integer>();
 		orderedProjects = table.getAllProjects();
+		table.fillPreferencesOfAll(10, orderedProjects);
+		System.out.println("\n\n");
+		orderedProjects = table.getAllProjects();
+		
 		String[] numOrderedProjects = table.numericalSort(orderedProjects);
 		System.out.println("Numerically ordered projects: ");
 		for (int i = 0; i< numOrderedProjects.length; i++){
 			System.out.println(numOrderedProjects[i]);
 		}
+		System.out.println("\n\n");
 		table.getAllProjects();
 
-		System.out.println("\n\n");
-		table.getAllStuderntEntries();
-		ArrayList<String> list = new ArrayList<>();
-		list = table.listProjects("Preassigned");
-		for(int i = 0; i < list.size(); i++){
-			System.out.println(list.get(i));
-		}
+//		System.out.println("\n\n");
+//		table.getAllStuderntEntries();
+//		ArrayList<String> list = new ArrayList<>();
+//		list = table.listProjects("Preassigned");
+//		for(int i = 0; i < list.size(); i++){
+//			System.out.println(list.get(i));
+//		}
+//		System.out.println(preassignedList);
 	}
 }
 
