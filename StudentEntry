@@ -32,6 +32,16 @@ public class StudentEntry {
 				}
 			}	
 		}
+		
+		for(Vector<String> row: PT){
+			if(row.firstElement() == studentName){
+				for(int i = 0; i < orderedPreferences.size(); i++){
+					if(PreferenceTable.returnPreassignedProjectList().contains(orderedPreferences.elementAt(i))){
+						orderedPreferences.remove(i);
+					}
+				}
+			}
+		}
 		numberOfStatedPreferences = orderedPreferences.size();
 	}
 
