@@ -60,4 +60,30 @@ public class CandidateSolution {
 		int fitness = energy*(-1);
 		return fitness;
 	}
+	
+	public CandidateSolution combineSolution(CandidateSolution secondCandidate){
+		CandidateSolution combinedCandidates = new CandidateSolution(pref);
+		combinedCandidates.allCands.clear();
+		for(int i = 0; i < allCands.size(); i++){
+						
+			CandidateAssignment tempAssignment = allCands.get(i);
+			CandidateAssignment tempAssignment2 = secondCandidate.allCands.get(i);
+			
+			int energyForFirst = tempAssignment.getEnergy();
+			int energyForSecond = tempAssignment2.getEnergy();
+			
+			if(energyForFirst > energyForSecond){
+				combinedCandidates.allCands.add(tempAssignment);
+			}
+			
+			else if(energyForSecond > energyForFirst){
+				combinedCandidates.allCands.add(tempAssignment2);			
+			}
+			
+			else{
+				combinedCandidates.allCands.add(tempAssignment);
+			}
+		}		
+		return combinedCandidates;
+	}
 }
