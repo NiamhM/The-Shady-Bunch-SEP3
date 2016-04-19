@@ -1,0 +1,48 @@
+import java.util.Collections;
+import java.util.Vector;
+
+
+public class GeneticAlgSolver {
+	
+	private Vector<CandidateSolution> population = new Vector<CandidateSolution>();
+	private PreferenceTable p = new PreferenceTable("Project allocation Data.TSV");
+	private static final int POPULATION_SIZE = 1000; 
+	
+	public GeneticAlgSolver(){
+		for(int i = 0; i< POPULATION_SIZE; i++){
+			population.add(new CandidateSolution(p));
+		}
+	}
+	public void sort(){
+		Collections.sort(population, (x,y) -> y.compareTo(x));
+	}
+	
+	private void combine(){
+		int newSize = population.size();
+		int halfWayPoint =newSize/2;
+		if(halfWayPoint % 2 == 1){
+			halfWayPoint++;
+		}
+		population.subList(halfWayPoint,newSize).clear();
+		newSize = population.size();
+		for(int j = 0; j< newSize; j = j+2){
+			CandidateSolution first = population.get(j);
+			CandidateSolution second = population.get(j+1);
+			CandidateSolution newSolution = first.combineSolutions(second);
+			population.add(newSolution);
+		}
+	}	
+	public CandidateSolution run(){
+		for(int i = 0; i < 10000; i++){
+			sort();
+			System.out.println(i+"th Time");
+			combine();
+		}
+		System.out.println("FINAL RESULT " +population.firstElement().getEnergy());
+		return population.firstElement();
+	}
+	
+	public Vector<CandidateSolution> getPopulation(){
+		return population;
+	}
+}
