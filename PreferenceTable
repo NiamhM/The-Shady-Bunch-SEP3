@@ -219,6 +219,40 @@ public class PreferenceTable {
 		}
 		return preassignedProjects;
 	}
+	
+		public Vector<String> listOfStudents(){
+		Vector<String> preAssignedStudents = new Vector<String>();
+		
+		for(Vector<String> row : fileContents){
+			String studentName = row.elementAt(0);
+			preAssignedStudents.add(studentName);
+		}
+		return preAssignedStudents;
+	}
+	
+	public Vector<String> listOfNonPreAssignedStudents(){
+		Vector<String> nonpreAssignedStudents = new Vector<String>();
+		
+		for(Vector<String> row: fileContents){
+			if(row.elementAt(1).equalsIgnoreCase("No")){
+				String Studentname = row.elementAt(0);
+				nonpreAssignedStudents.add(Studentname);
+			}
+		}
+		return nonpreAssignedStudents;
+	}
+	
+	public Vector<String> listOfPreAssignedStudents(){
+		Vector<String> preAssignedStudents = new Vector<String>();
+		
+		for(Vector<String> row : fileContents){
+			if(row.elementAt(1).equalsIgnoreCase("Yes")){
+				String StudentName = row.elementAt(0);
+				preAssignedStudents.add(StudentName);
+			}
+		}
+		return preAssignedStudents;
+	}
 
 	public static void main(String[] args) throws IOException {
 		PreferenceTable table = new PreferenceTable("Project allocation Data.TSV");
@@ -268,6 +302,10 @@ public class PreferenceTable {
 //			System.out.println(list.get(i));
 //		}
 //		System.out.println(preassignedList);
+
+		System.out.println(table.listOfStudents());
+		System.out.println(table.listOfPreAssignedStudents());
+		System.out.println(table.listOfNonPreAssignedStudents());
 	}
 }
 
