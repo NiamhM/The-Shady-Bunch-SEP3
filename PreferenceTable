@@ -254,6 +254,20 @@ public class PreferenceTable {
 		}
 		return preAssignedStudents;
 	}
+	
+		public void removePreAssignedPreferences(){
+		Vector<StudentEntry> allStudentEntries = getAllStuderntEntries();
+		Vector<String> studentPreferences = new Vector<String>();
+		
+		for(int i = 0; i < allStudentEntries.size(); i++){
+			studentPreferences = allStudentEntries.elementAt(i).getOrderedPreference();
+			for(int j = 0; j < studentPreferences.size(); j++){
+				if(preassignedList.contains(studentPreferences.elementAt(j))){
+					studentPreferences.removeElementAt(j);
+				}
+			}
+		}
+	}
 
 	public static void main(String[] args) throws IOException {
 		PreferenceTable table = new PreferenceTable("Project allocation Data.TSV");
@@ -307,6 +321,15 @@ public class PreferenceTable {
 		System.out.println("List Of Students: " + table.listOfStudentsNames());
 		System.out.println("List Of Students with Preassigned Projects: " + table.listOfPreAssignedStudents());
 		System.out.println("List Of Students without Preassigned Projects: " + table.listOfNonPreAssignedStudents());
+		
+		System.out.println("\n\n");
+		
+		StudentEntry testStudent = table.getEntryFor("Mr. Darcy");
+		System.out.println(testStudent.getOrderedPreference());
+		table.removePreAssignedPreferences();
+		System.out.println(preassignedList);
+		System.out.println(testStudent.getOrderedPreference());
+
 	}
 }
 
