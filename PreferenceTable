@@ -145,8 +145,6 @@ public class PreferenceTable {
 
 		while(iter.hasNext()) {
 			Map.Entry me = (Map.Entry)iter.next();
-			//						System.out.print(me.getKey() + ": ");
-			//						System.out.println(me.getValue());
 		}
 		return projectPopularity;
 	}
@@ -220,36 +218,39 @@ public class PreferenceTable {
 		return preassignedProjects;
 	}
 	
-		public Vector<String> listOfStudents(){
-		Vector<String> preAssignedStudents = new Vector<String>();
-		
-		for(Vector<String> row : fileContents){
-			String studentName = row.elementAt(0);
-			preAssignedStudents.add(studentName);
+	public Vector<String> listOfStudentsNames(){
+		Vector<String> studentList = new Vector<String>();
+		Vector<StudentEntry> allStudentEntries = new Vector<StudentEntry>();
+		allStudentEntries = getAllStuderntEntries();
+		for (int i=0; i<allStudentEntries.size(); i++){
+			String studentName = allStudentEntries.elementAt(i).getStudentName();
+			studentList.addElement(studentName);
 		}
-		return preAssignedStudents;
+		return studentList;
 	}
 	
 	public Vector<String> listOfNonPreAssignedStudents(){
 		Vector<String> nonpreAssignedStudents = new Vector<String>();
-		
-		for(Vector<String> row: fileContents){
-			if(row.elementAt(1).equalsIgnoreCase("No")){
-				String Studentname = row.elementAt(0);
-				nonpreAssignedStudents.add(Studentname);
-			}
+		Vector<StudentEntry> allStudentEntries = new Vector<StudentEntry>();
+		allStudentEntries = getAllStuderntEntries();
+		for (int i=0; i<allStudentEntries.size(); i++){
+			if (!(allStudentEntries.elementAt(i).hasPreassignedProject())){
+				String studentName = allStudentEntries.elementAt(i).getStudentName();
+				nonpreAssignedStudents.addElement(studentName);
+			}			
 		}
 		return nonpreAssignedStudents;
 	}
 	
 	public Vector<String> listOfPreAssignedStudents(){
 		Vector<String> preAssignedStudents = new Vector<String>();
-		
-		for(Vector<String> row : fileContents){
-			if(row.elementAt(1).equalsIgnoreCase("Yes")){
-				String StudentName = row.elementAt(0);
-				preAssignedStudents.add(StudentName);
-			}
+		Vector<StudentEntry> allStudentEntries = new Vector<StudentEntry>();
+		allStudentEntries = getAllStuderntEntries();
+		for (int i=0; i<allStudentEntries.size(); i++){
+			if (allStudentEntries.elementAt(i).hasPreassignedProject()){
+				String studentName = allStudentEntries.elementAt(i).getStudentName();
+				preAssignedStudents.addElement(studentName);
+			}			
 		}
 		return preAssignedStudents;
 	}
@@ -276,7 +277,7 @@ public class PreferenceTable {
 //		System.out.println("\nEnergy for assigned project " + cand.getAssignedProject() + " is: " + cand.getEnergy());
 		Vector<StudentEntry> allStudents = table.getAllStuderntEntries();
 		allPreassignedProjects = table.findPreassignedProjects(allStudents);
-		System.out.println(allPreassignedProjects);
+		System.out.println("Preassigned Projects: " + allPreassignedProjects);
 		System.out.println("Energy of the Candidate Solution is: " + solution.getEnergy());
 		System.out.println("Fitness of the Candidate Solution is: " + solution.getFitness());
 		System.out.println("\nOrdered Projects: " + table.getAllProjects());
@@ -303,9 +304,9 @@ public class PreferenceTable {
 //		}
 //		System.out.println(preassignedList);
 
-		System.out.println(table.listOfStudents());
-		System.out.println(table.listOfPreAssignedStudents());
-		System.out.println(table.listOfNonPreAssignedStudents());
+		System.out.println("List Of Students: " + table.listOfStudentsNames());
+		System.out.println("List Of Students with Preassigned Projects: " + table.listOfPreAssignedStudents());
+		System.out.println("List Of Students without Preassigned Projects: " + table.listOfNonPreAssignedStudents());
 	}
 }
 
