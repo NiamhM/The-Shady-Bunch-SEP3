@@ -70,7 +70,7 @@ public class GUI {
 		btnProjectBy.setForeground(Color.BLUE);
 		btnProjectBy.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ArrayList<String> list = new ArrayList<>();
+				Vector<String> list = new Vector<String>();
 				list = table.listProjects("Preassigned");
 
 				for(int i = 0; i < list.size(); i++){
@@ -90,7 +90,7 @@ public class GUI {
 		JButton btnNonpreassignedProjects = new JButton("Non-preassigned ");
 		btnNonpreassignedProjects.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ArrayList<String> list = new ArrayList<>();
+				Vector<String> list = new Vector<String>();
 				list = table.listProjects("Non-Preassigned");
 
 				for(int i = 0; i < list.size(); i++){
@@ -106,7 +106,7 @@ public class GUI {
 		JButton btnAll = new JButton("All");
 		btnAll.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ArrayList<String> list = new ArrayList<>();
+				Vector<String> list = new Vector<String>();
 				list = table.listProjects("All");
 
 				for(int i = 0; i < list.size(); i++){
