@@ -1,0 +1,48 @@
+import java.awt.Color;
+import javax.swing.JFrame;
+import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
+
+public class ProgressBar{
+  static JProgressBar myProgressBar = new JProgressBar();
+  static JFrame frame = new JFrame("Currently Working out your Algorithm");
+  
+  public static void CreateFrame(){
+	    frame.setContentPane(myProgressBar);
+	    frame.pack();
+	    frame.setBounds(500, 500, 400, 100); //sets location and size on screen
+	    frame.getContentPane().setBackground(new Color(255, 255, 255));
+	    frame.getContentPane().setForeground(new Color(0, 0, 204));
+	    frame.setVisible(true);
+  }
+  
+  public static void CloseFrame(){
+	  	frame.setVisible(false);
+	    frame.dispose();
+  }
+  
+  public static void incrementFrame(int num){
+	  int percent = num;
+      try{
+        SwingUtilities.invokeLater(new Runnable() {
+          public void run() {
+        	myProgressBar.setStringPainted(true);
+        	myProgressBar.setValue(percent);
+          }
+        });
+        java.lang.Thread.sleep(num);
+      } catch (InterruptedException e) {
+        ;
+      }
+  }
+
+  public static void main(String args[]) {
+    
+	  CreateFrame();
+    // run a loop to demonstrate raising
+    for (int i = 0; i <= 100; i++) {
+      incrementFrame(i);
+    }
+    CloseFrame();
+  }
+}
