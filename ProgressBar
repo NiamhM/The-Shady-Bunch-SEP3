@@ -30,7 +30,7 @@ public class ProgressBar{
         	myProgressBar.setValue(percent);
           }
         });
-        java.lang.Thread.sleep(num);
+        java.lang.Thread.sleep(100);
       } catch (InterruptedException e) {
         ;
       }
