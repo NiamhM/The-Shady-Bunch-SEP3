@@ -1,0 +1,45 @@
+import java.util.Random;
+
+public class SimulatedAnnealing {
+	CandidateSolution CS;
+	public SimulatedAnnealing(PreferenceTable p) {
+		CS = new CandidateSolution(p);
+		saSolution();
+	}
+
+	private CandidateSolution saSolution(){
+		int energy;
+		int bestEnergy = CS.getEnergy();
+		for(float temp = 200; temp >= 0; temp -= 0.01){
+			Random RND = new Random();
+			int num = RND.nextInt(CS.getAllCandiates().size());
+
+			CandidateAssignment C = CS.getAllCandiates().get(num);
+			C.randomiseAssignment();
+			CS.getAllCandiates().setElementAt(C, num);
+			energy = CS.getEnergy();
+
+			if(energy >= bestEnergy){
+				C.undoChange();
+				CS.getAllCandiates().setElementAt(C, num);
+			}
+
+			else{
+				bestEnergy = energy;
+				System.out.println(bestEnergy);
+//				for(int i = 0; i < CS.getAllCandiates().size(); i++){
+//					System.out.print(CS.getAllCandiates().get(i).getStudentEntry().getStudentName() + " : ");
+//					System.out.println(CS.getAllCandiates().get(i).getAssignedProject());
+//				}
+				System.out.println(CS);
+			}
+		}
+		System.out.println(CS.getEnergy());
+//		for(int i = 0; i < CS.getAllCandiates().size(); i++){
+////			System.out.print(CS.getAllCandiates().get(i).getStudentEntry().getStudentName() + " : ");
+////			System.out.println(CS.getAllCandiates().get(i).getAssignedProject());
+//		}
+		return CS;
+	}
+	
+}
