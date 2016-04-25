@@ -95,4 +95,9 @@ public class CandidateSolution {
 		}		
 		return combinedCandidates;
 	}
+	
+	public Vector<CandidateAssignment> getAllCandiates(){
+		return allCandidates;
+	}
+
 }
