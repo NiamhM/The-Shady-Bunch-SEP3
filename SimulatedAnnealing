@@ -6,10 +6,9 @@ public class SimulatedAnnealing {
 	private CandidateSolution CS;
 	public SimulatedAnnealing(PreferenceTable p) {
 		CS = new CandidateSolution(p);
-		saSolution();
 	}
 
-	private CandidateSolution saSolution(){
+	public CandidateSolution saSolution(){
 		int newEnergy;
 		int currentEnergy = CS.getEnergy();
 		for(double temp = 1000; temp >= 0; temp -= 0.0001){
@@ -30,19 +29,9 @@ public class SimulatedAnnealing {
 
 			else{
 				currentEnergy = newEnergy;
-				//System.out.println(currentEnergy);
 			}
 		}
-		
-//		for(int i = 0; i < CS.getAllCandiates().size(); i++){
-//			System.out.print(CS.getAllCandiates().get(i).getStudentEntry().getStudentName() + " : ");
-//			System.out.println(CS.getAllCandiates().get(i).getAssignedProject());
-//		}
 		System.out.println("ENERGY: " + CS.getEnergy());
-		return CS;
-	}
-	
-	public CandidateSolution getBestSolution(){
 		return CS;
 	}
 	
