@@ -1,5 +1,6 @@
 import java.awt.EventQueue;
 
+import javax.annotation.processing.FilerException;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 
@@ -12,6 +13,11 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Window;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
@@ -312,7 +318,6 @@ public class GUI {
 	public int[] compileResults(CandidateSolution bestSolution){
 		//size 11 make first slot num of students then result/num of student = %
 		int[] results = new int[11];
-		//CandidateSolution bestSolution = run();
 		Vector<CandidateAssignment> assignments = bestSolution.getAllCandiates();
 		results[0] = assignments.size(); //get the number of students
 		for(CandidateAssignment candidate: assignments){
@@ -353,10 +358,20 @@ public class GUI {
 	}
 	
 	private void runSimAnn(){
-		SimulatedAnnealing sa = new SimulatedAnnealing(table);
-				CandidateSolution solution = sa.getBestSolution();
-				int[] results = compileResults(solution);
-				String energy = Integer.toString(solution.getEnergy());
-				printResult(results,energy);
+			SimulatedAnnealing sa = new SimulatedAnnealing(table);
+			CandidateSolution solution = sa.saSolution();
+			int[] results = compileResults(solution);
+			String energy = Integer.toString(solution.getEnergy());
+			printResult(results,energy);
 		}
+	
+//	private void save(String filename){
+//		try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+//	              new FileOutputStream("filename.txt"), "utf-8"))) {
+//	   writer.write("something");
+//	}catch(IOException e){
+//		
+//	}
+//		
+//	}
 }
