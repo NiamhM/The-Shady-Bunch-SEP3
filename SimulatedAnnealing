@@ -3,7 +3,7 @@ import java.util.*;
 import javax.print.attribute.ResolutionSyntax;
 
 public class SimulatedAnnealing {
-	CandidateSolution CS;
+	private CandidateSolution CS;
 	public SimulatedAnnealing(PreferenceTable p) {
 		CS = new CandidateSolution(p);
 		saSolution();
@@ -39,6 +39,10 @@ public class SimulatedAnnealing {
 //			System.out.println(CS.getAllCandiates().get(i).getAssignedProject());
 //		}
 		System.out.println("ENERGY: " + CS.getEnergy());
+		return CS;
+	}
+	
+	public CandidateSolution getBestSolution(){
 		return CS;
 	}
 	
