@@ -1,4 +1,6 @@
-import java.util.Random;
+import java.util.*;
+
+import javax.print.attribute.ResolutionSyntax;
 
 public class SimulatedAnnealing {
 	CandidateSolution CS;
@@ -8,38 +10,51 @@ public class SimulatedAnnealing {
 	}
 
 	private CandidateSolution saSolution(){
-		int energy;
-		int bestEnergy = CS.getEnergy();
-		for(float temp = 200; temp >= 0; temp -= 0.01){
+		int newEnergy;
+		int currentEnergy = CS.getEnergy();
+		for(double temp = 1000; temp >= 0; temp -= 0.0001){
 			Random RND = new Random();
 			int num = RND.nextInt(CS.getAllCandiates().size());
 
 			CandidateAssignment C = CS.getAllCandiates().get(num);
 			C.randomiseAssignment();
 			CS.getAllCandiates().setElementAt(C, num);
-			energy = CS.getEnergy();
+			newEnergy = CS.getEnergy();
+			
+			double changeInEnergy = currentEnergy - newEnergy;
 
-			if(energy >= bestEnergy){
+			if(newEnergy >= currentEnergy && !(boltzmann(temp, changeInEnergy))){
 				C.undoChange();
 				CS.getAllCandiates().setElementAt(C, num);
 			}
 
 			else{
-				bestEnergy = energy;
-				System.out.println(bestEnergy);
-//				for(int i = 0; i < CS.getAllCandiates().size(); i++){
-//					System.out.print(CS.getAllCandiates().get(i).getStudentEntry().getStudentName() + " : ");
-//					System.out.println(CS.getAllCandiates().get(i).getAssignedProject());
-//				}
-				System.out.println(CS);
+				currentEnergy = newEnergy;
+				//System.out.println(currentEnergy);
 			}
 		}
-		System.out.println(CS.getEnergy());
+		
 //		for(int i = 0; i < CS.getAllCandiates().size(); i++){
-////			System.out.print(CS.getAllCandiates().get(i).getStudentEntry().getStudentName() + " : ");
-////			System.out.println(CS.getAllCandiates().get(i).getAssignedProject());
+//			System.out.print(CS.getAllCandiates().get(i).getStudentEntry().getStudentName() + " : ");
+//			System.out.println(CS.getAllCandiates().get(i).getAssignedProject());
 //		}
+		System.out.println("ENERGY: " + CS.getEnergy());
 		return CS;
 	}
 	
+	private boolean boltzmann(double temp, double change){
+		Random RND = new Random();
+		double randNum = RND.nextDouble();
+		
+		double boltzmann = (Math.exp((change/temp)));
+		
+		if(boltzmann > randNum){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	
+
 }
