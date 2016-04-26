@@ -1,11 +1,14 @@
 
 import java.util.Hashtable;
+import java.util.Random;
 import java.util.Vector;
 
 public class CandidateSolution {
 	PreferenceTable pref;
 	private Vector<CandidateAssignment> allCandidates = new Vector<CandidateAssignment>();
 	private static final int DUPLICATE_PROJECT_PENALTY = 1000;
+	Random randomNumber = new Random();
+	
 	public CandidateSolution(PreferenceTable p){
 		pref  = p;
 		Vector<Vector<String>> allPrefs = PreferenceTable.getPrefTable(); 
@@ -73,31 +76,31 @@ public class CandidateSolution {
 	}
 	
 	public CandidateSolution combineSolutions(CandidateSolution secondCandidate){
-		CandidateSolution combinedCandidates = new CandidateSolution(pref);
-		combinedCandidates.allCandidates.clear();
+		CandidateSolution newCandidate = new CandidateSolution(pref);
+		newCandidate.allCandidates.clear();
+//		CandidateAssignment tempAssignment = allCandidates.get(0);
+//		newCandidate.allCandidates.add(tempAssignment);
+		int energyOne;//= newCandidate.getEnergy();
+		int energyTwo;
+		newCandidate.allCandidates.clear();
 		for(int i = 0; i < allCandidates.size(); i++){
-						
 			CandidateAssignment tempAssignment = allCandidates.get(i);
 			CandidateAssignment tempAssignment2 = secondCandidate.allCandidates.get(i);
+			newCandidate.allCandidates.add(tempAssignment);
+			energyOne = newCandidate.getEnergy();
+			newCandidate.allCandidates.remove(tempAssignment);
 			
-			int energyForFirst = tempAssignment.getEnergy();
-			int energyForSecond = tempAssignment2.getEnergy();
-			
-			if(energyForFirst > energyForSecond){
-				combinedCandidates.allCandidates.add(tempAssignment);
-			}
-			else if(energyForSecond > energyForFirst){
-				combinedCandidates.allCandidates.add(tempAssignment2);			
-			}
-			else{
-				combinedCandidates.allCandidates.add(tempAssignment);
+			newCandidate.allCandidates.add(tempAssignment2);
+			energyTwo = newCandidate.getEnergy();
+			if(energyOne < energyTwo){
+				newCandidate.allCandidates.remove(tempAssignment2);
+				newCandidate.allCandidates.add(tempAssignment);
 			}
 		}		
-		return combinedCandidates;
+		return newCandidate;
 	}
 	
 	public Vector<CandidateAssignment> getAllCandiates(){
 		return allCandidates;
 	}
-
 }
