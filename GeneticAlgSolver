@@ -1,14 +1,20 @@
 import java.util.Collections;
+import java.util.Random;
 import java.util.Vector;
+import java.awt.Color;
+import javax.swing.JFrame;
+import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 
-
-public class GeneticAlgSolver {
+public class GeneticAlgSolver {//extends AglorithmSolver {
 	
 	private Vector<CandidateSolution> population = new Vector<CandidateSolution>();
 	private PreferenceTable p = new PreferenceTable("Project allocation Data.TSV");
 	private static final int POPULATION_SIZE = 1000; 
+	Random randomNumber = new Random();
 	
 	public GeneticAlgSolver(){
+		//super(0);
 		for(int i = 0; i< POPULATION_SIZE; i++){
 			population.add(new CandidateSolution(p));
 		}
@@ -19,28 +25,93 @@ public class GeneticAlgSolver {
 	
 	private void combine(){
 		int newSize = population.size();
-		int halfWayPoint =newSize/2;
-		if(halfWayPoint % 2 == 1){
-			halfWayPoint++;
-		}
-		population.subList(halfWayPoint,newSize).clear();
+		int topTenPC = newSize/10;
+		population.subList(newSize-topTenPC,newSize).clear(); //culling last 10%
 		newSize = population.size();
-		for(int j = 0; j< newSize; j = j+2){
-			CandidateSolution first = population.get(j);
-			CandidateSolution second = population.get(j+1);
+		for(int j = 0; j< topTenPC; j++){
+			int block =2;
+//			if(j == topTenPC/2){
+//				block = 2;
+//			}
+			int alphaNum = randomNumber.nextInt(topTenPC);
+//			int alphaNum2 = randomNumber.nextInt(topTenPC);
+			//int half = (newSize-topTenPC)/2;
+			int betaNum = randomNumber.nextInt(topTenPC);
+			betaNum = betaNum + (newSize-topTenPC);
+			
+			CandidateSolution first = population.get(alphaNum);
+			CandidateSolution second = population.get(betaNum);
 			CandidateSolution newSolution = first.combineSolutions(second);
 			population.add(newSolution);
 		}
 	}	
 	public CandidateSolution run(){
-		for(int i = 0; i < 10000; i++){
+		ProgressBar myProgressBar = new ProgressBar();
+		//myProgressBar.CreateFrame();  
+		for(int i = 0; i < 1000; i++){
+			int num = i;
+			//myProgressBar.incrementFrame(num);
 			sort();
 			System.out.println(i+"th Time");
 			combine();
 		}
+		myProgressBar.CloseFrame();
 		System.out.println("FINAL RESULT " +population.firstElement().getEnergy());
 		return population.firstElement();
 	}
+	
+	public int getEnergy(){
+		return population.firstElement().getEnergy();
+	}
+	public int[] compileResults(){
+	//size 11 make first slot num of students then result/num of student = %
+	int[] results = new int[11];
+	CandidateSolution bestSolution = run();
+//	if(algorithmNumber == 0){
+//		bestSolution= ga.run();
+//	}
+//	else {
+//		bestSolution= sa.run();
+//	}
+	
+	Vector<CandidateAssignment> assignments = bestSolution.getAllCandiates();
+	results[0] = assignments.size(); //get the number of students
+	for(CandidateAssignment candidate: assignments){
+		switch(candidate.getEnergy()){
+		case 1: 
+			results[1]++;
+			break;
+		case 4:
+			results[2]++;
+			break;
+		case 9:
+			results[3]++;
+			break;
+		case 16:
+			results[4]++;
+			break;
+		case 25:
+			results[5]++;
+			break;
+		case 36:
+			results[6]++;
+			break;
+		case 49:
+			results[7]++;
+			break;
+		case 64:
+			results[8]++;
+			break;
+		case 81:
+			results[9]++;
+			break;
+		case 100:
+			results[10]++;
+			break;
+		}
+	}
+	return results;
+}
 	
 	public Vector<CandidateSolution> getPopulation(){
 		return population;
