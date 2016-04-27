@@ -29,6 +29,7 @@ import javax.swing.JList;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.JMenu;
+import javax.swing.JSeparator;
 
 public class GUI {
 	private JFrame frame;
@@ -82,11 +83,11 @@ public class GUI {
 		frame = new JFrame("Fourth Year Project Allocator");
 		frame.getContentPane().setForeground(new Color(240, 255, 255));
 		frame.getContentPane().setBackground(new Color(235, 235, 235));
-		frame.setBounds(100, 100, 450, 330); 	//location and size
+		frame.setBounds(100, 100, 452, 392); 	//location and size
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
-		JButton btnProjectBy = new JButton("Project List \r");
+		JButton btnProjectBy = new JButton("Project Lists");
 		//btnProjectBy.setFont(new Font("Tw Cen MT", Font.PLAIN, 13));
 		btnProjectBy.setForeground(Color.BLACK);
 		btnProjectBy.addActionListener(new ActionListener() {
@@ -126,20 +127,10 @@ public class GUI {
 				}
 			}
 		});
-		btnProjectBy.setBounds(250, 145, 150, 30);
+		btnProjectBy.setBounds(28, 182, 161, 30);
 		frame.getContentPane().add(btnProjectBy);
 		
-		JButton projectStats = new JButton("Project Stats");
-		projectStats.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-			
-			}
-		});
-		projectStats.setForeground(Color.BLACK);
-		projectStats.setBounds(250, 30, 150, 30);
-		frame.getContentPane().add(projectStats);
-		
-		JButton btnOrdredByPopularity = new JButton("Ordered by Popularity");
+		JButton btnOrdredByPopularity = new JButton("Projects by Popularity");
 		btnOrdredByPopularity.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				table.removePreAssignedPreferences();
@@ -154,10 +145,10 @@ public class GUI {
 		});
 		//btnOrdredByPopularity.setFont(new Font("Tw Cen MT", Font.PLAIN, 11));
 		btnOrdredByPopularity.setForeground(Color.BLACK);
-		btnOrdredByPopularity.setBounds(250, 185, 150, 30);
+		btnOrdredByPopularity.setBounds(28, 240, 161, 30);
 		frame.getContentPane().add(btnOrdredByPopularity);
 
-		JButton btnListOsStudents = new JButton("List of Students");
+		JButton btnListOsStudents = new JButton("Student Lists");
 		btnListOsStudents.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Vector<String> allStudentsList = table.listOfStudentsNames();
@@ -197,7 +188,7 @@ public class GUI {
 			}
 		});
 		btnListOsStudents.setForeground(Color.BLACK);
-		btnListOsStudents.setBounds(250, 100, 150, 30);
+		btnListOsStudents.setBounds(28, 127, 161, 30);
 		frame.getContentPane().add(btnListOsStudents);
 
 		JButton btnExit = new JButton("EXIT");
@@ -207,41 +198,39 @@ public class GUI {
 			}
 		});
 		btnExit.setForeground(Color.RED);
-		btnExit.setBounds(173, 237, 79, 42);
+		btnExit.setBounds(318, 300, 79, 42);
 		frame.getContentPane().add(btnExit);
 
-		JButton btnDefault = new JButton("Default");
+		JButton btnDefault = new JButton("Allocate Projects");
 		btnDefault.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				runSimAnn();
 			}
 		});
-		btnDefault.setForeground(new Color(0, 0, 0));
-		btnDefault.setBounds(10, 100, 150, 30);
+		btnDefault.setForeground(Color.RED);
+		btnDefault.setBounds(290, 38, 136, 49);
 		//btnDefault.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		frame.getContentPane().add(btnDefault);
-
-		JLabel lblAllocateProjects = new JLabel("Allocate Projects:");
-		lblAllocateProjects.setForeground(new Color(255, 99, 71));
-		//lblAllocateProjects.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblAllocateProjects.setBounds(10, 70, 150, 30);
-		frame.getContentPane().add(lblAllocateProjects);
 
 		JLabel label = new JLabel("");
 		label.setBounds(54, 38, 46, 14);
 		frame.getContentPane().add(label);
 		
 		JButton btnSimulatedAnnealing = new JButton("Simulated Annealing");
+		btnSimulatedAnnealing.createToolTip();
+		btnSimulatedAnnealing.setToolTipText("Takes around 1:40 - 2 minutes");
 		btnSimulatedAnnealing.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				runSimAnn();
 			}
 		});
 		btnSimulatedAnnealing.setForeground(Color.BLACK);
-		btnSimulatedAnnealing.setBounds(10, 145, 150, 30);
+		btnSimulatedAnnealing.setBounds(247, 156, 150, 30);
 		frame.getContentPane().add(btnSimulatedAnnealing);
 		
 		JButton btnGeneticAlgorithm = new JButton("Genetic Algorithm");
+		btnGeneticAlgorithm.createToolTip();
+		btnGeneticAlgorithm.setToolTipText("Takes around 1:50 - 2:10 minutes");
 		btnGeneticAlgorithm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				GeneticAlgSolver geneticSolver = new GeneticAlgSolver(table);
@@ -255,33 +244,53 @@ public class GUI {
 			}
 			});
 		btnGeneticAlgorithm.setForeground(Color.BLACK);
-		btnGeneticAlgorithm.setBounds(10, 185, 150, 30);
+		btnGeneticAlgorithm.setBounds(247, 211, 150, 30);
 		frame.getContentPane().add(btnGeneticAlgorithm);
 		
 		
 		
 		JLabel lblFileName = new JLabel("File name:");
-		lblFileName.setBounds(10, 11, 79, 14);
+		lblFileName.setForeground(Color.BLUE);
+		lblFileName.setFont(new Font("Tahoma", Font.PLAIN, 10));
+		lblFileName.setBounds(10, 13, 79, 14);
 		frame.getContentPane().add(lblFileName);
 
 		userInput = new JTextField();
-		userInput.setBounds(20, 35, 150, 20);
+		userInput.setBounds(10, 32, 150, 20);
 		frame.getContentPane().add(userInput);
 		userInput.setColumns(10);
 		
 		JButton btnEnter = new JButton("Enter");
+		btnEnter.setForeground(Color.GRAY);
+		btnEnter.setFont(new Font("Tahoma", Font.ITALIC, 7));
+		btnEnter.createToolTip();
+		btnEnter.setToolTipText("NOTE: Can only be pressed once!");
 		btnEnter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String input = userInput.getText() + ".tsv";
 				initialize(input);
+				btnEnter.setEnabled(false);
 			}
 		});
-		btnEnter.setBounds(173, 65, 79, 20);
+		btnEnter.setBounds(162, 56, 59, 14);
 		frame.getContentPane().add(btnEnter);
 		
 		JLabel lbltsv = new JLabel(".tsv");
-		lbltsv.setBounds(173, 38, 46, 14);
+		lbltsv.setBounds(162, 38, 46, 14);
 		frame.getContentPane().add(lbltsv);
+		
+		JLabel lblDefaultFileProject = new JLabel("Default file: Project Allocation Data");
+		lblDefaultFileProject.setFont(new Font("Tahoma", Font.ITALIC, 8));
+		lblDefaultFileProject.setBounds(10, 56, 179, 14);
+		frame.getContentPane().add(lblDefaultFileProject);
+		
+		JLabel lblChooseAnAlgorithm = new JLabel("Choose an algorithm to run:");
+		lblChooseAnAlgorithm.setBounds(247, 131, 179, 14);
+		frame.getContentPane().add(lblChooseAnAlgorithm);
+		
+		JSeparator separator = new JSeparator();
+		separator.setBounds(10, 97, 416, 5);
+		frame.getContentPane().add(separator);
 	}
 	private void printResult(int[] results, String energy){
 		String percentage;
@@ -364,14 +373,4 @@ public class GUI {
 			String energy = Integer.toString(solution.getEnergy());
 			printResult(results,energy);
 		}
-	
-//	private void save(String filename){
-//		try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-//	              new FileOutputStream("filename.txt"), "utf-8"))) {
-//	   writer.write("something");
-//	}catch(IOException e){
-//		
-//	}
-//		
-//	}
 }
