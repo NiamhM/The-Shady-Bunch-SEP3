@@ -23,6 +23,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -30,6 +31,7 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.JMenu;
 import javax.swing.JSeparator;
+import javax.swing.ScrollPaneConstants;
 
 public class GUI {
 	private JFrame frame;
@@ -40,13 +42,13 @@ public class GUI {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-//		CandidateSolution solution = new CandidateSolution(table);
-//		Vector<StudentEntry> allStudents = table.getAllStuderntEntries();
-//		//table.removePreAssignedPreferences();
-//		orderedProjects = table.getAllProjects();
-//		table.fillPreferencesOfAll(10, orderedProjects);
-//		table.getAllProjects();
-//		table.getAllStuderntEntries();
+		//		CandidateSolution solution = new CandidateSolution(table);
+		//		Vector<StudentEntry> allStudents = table.getAllStuderntEntries();
+		//		//table.removePreAssignedPreferences();
+		//		orderedProjects = table.getAllProjects();
+		//		table.fillPreferencesOfAll(10, orderedProjects);
+		//		table.getAllProjects();
+		//		table.getAllStuderntEntries();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -79,7 +81,7 @@ public class GUI {
 		table.fillPreferencesOfAll(10, orderedProjects);
 		table.getAllProjects();
 		table.getAllStuderntEntries();
-		
+
 		frame = new JFrame("Fourth Year Project Allocator");
 		frame.getContentPane().setForeground(new Color(240, 255, 255));
 		frame.getContentPane().setBackground(new Color(235, 235, 235));
@@ -95,52 +97,76 @@ public class GUI {
 				Vector<String> preassignedProjectList = table.listProjects("Preassigned");
 				Vector<String> nonPreassignedProjectList = table.listProjects("Non-preassigned");
 				Vector<String> allProjectsList  = table.listProjects("All");
-				
-				String preassignedProjects = "The preassigned projects are: \n";
+
+				String preassignedProjects = "";
 				for(int i = 0; i < preassignedProjectList.size(); i++){
 					preassignedProjects = preassignedProjects + preassignedProjectList.get(i) + "\n";
 				}
-				
-				String nonPreassignedProjects = "The Non-preassigned projects are: \n";
+
+				String nonPreassignedProjects = "";
 				for(int j = 0; j < nonPreassignedProjectList.size(); j++){
 					nonPreassignedProjects = nonPreassignedProjects + nonPreassignedProjectList.get(j) + "\n";
 				}
-				
-				String allProjects = "The projects available are: \n"; 
+
+				String allProjects = ""; 
 				for(int j = 0; j < allProjectsList.size(); j++){
 					allProjects = allProjects + allProjectsList.get(j) + "\n";
 				}
-				
-				 Object[] whichProject = { "Preassigned", "Not-preassigned", "All" };
-				 Object selectedValue = JOptionPane.showInputDialog(null, "Choose one", "Chose a list",
-				             JOptionPane.INFORMATION_MESSAGE, null,
-				             whichProject, whichProject[0]);
-				 
-				if(selectedValue.toString() =="Preassigned"){
-					JOptionPane.showMessageDialog(null, preassignedProjects);
-				}
-				else if (selectedValue.toString() == "Not-preassigned"){
-					JOptionPane.showMessageDialog(null, nonPreassignedProjects);
-				}
-				else if(selectedValue.toString() == "All" ){
-					JOptionPane.showMessageDialog(null, allProjects);
+				try{
+					Object[] whichProject = { "Preassigned", "Not-preassigned", "All" };
+					Object selectedValue = JOptionPane.showInputDialog(null, "Choose one", "Chose a list",
+							JOptionPane.INFORMATION_MESSAGE, null,
+							whichProject, whichProject[0]);
+					JTextArea textArea = new JTextArea(15,30);
+					if(selectedValue.toString() =="Preassigned"){
+						textArea.setText(preassignedProjects);
+						textArea.setEditable(false);
+						JScrollPane scrollPane = new JScrollPane(textArea);
+						scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+						JOptionPane.showMessageDialog(null, scrollPane, "preassigned Projects",  JOptionPane.INFORMATION_MESSAGE);
+
+
+					}
+					else if (selectedValue.toString() == "Not-preassigned"){
+						textArea.setText(nonPreassignedProjects);
+						textArea.setEditable(false);
+						JScrollPane scrollPane = new JScrollPane(textArea);
+						scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+						JOptionPane.showMessageDialog(null, scrollPane, "Not-preassigned Projects",  JOptionPane.INFORMATION_MESSAGE);
+
+					}
+					else if(selectedValue.toString() == "All" ){
+						textArea.setText(allProjects);
+						textArea.setEditable(false);
+						JScrollPane scrollPane = new JScrollPane(textArea);
+						scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+						JOptionPane.showMessageDialog(null, scrollPane, "All projects",  JOptionPane.INFORMATION_MESSAGE);
+
+					}
+				}catch(NullPointerException ex){
+
 				}
 			}
 		});
 		btnProjectBy.setBounds(28, 182, 161, 30);
 		frame.getContentPane().add(btnProjectBy);
-		
+
 		JButton btnOrdredByPopularity = new JButton("Projects by Popularity");
 		btnOrdredByPopularity.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				table.removePreAssignedPreferences();
 				orderedProjects = table.getAllProjects();
 				String[] numOrderedProjects = table.numericalSort(orderedProjects);
-				String output = "The list of projects by popularity is: \n";
-				for (int i = 0; i< numOrderedProjects.length; i++){
+				String output = "";
+				for (int i = numOrderedProjects.length-1; i >=0; i--){
 					output = output + numOrderedProjects[i] + "\n";
 				}
-				JOptionPane.showMessageDialog(null, output);
+				JTextArea textArea = new JTextArea(35, 55);
+				textArea.setText(output);
+				textArea.setEditable(false);
+				JScrollPane scrollPane = new JScrollPane(textArea);
+				scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+				JOptionPane.showMessageDialog(null, scrollPane, "Projects by populatity",  JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
 		//btnOrdredByPopularity.setFont(new Font("Tw Cen MT", Font.PLAIN, 11));
@@ -154,12 +180,11 @@ public class GUI {
 				Vector<String> allStudentsList = table.listOfStudentsNames();
 				Vector<String> preassignedStudentsList = table.listOfPreAssignedStudents();
 				Vector<String> notPreassignedStudentsList = table.listOfNonPreAssignedStudents();
-				
-				String allStudentsString = "The students are: \n";
-				String preassignedStudentsString = "The students with preassigned projects are \n";
-				String notPreassignedStudentsString = "The students without a preassigned projects are \n";
-				
-				//JScrollPane scrollpane = new JScrollPane();
+
+				String allStudentsString = "";
+				String preassignedStudentsString = "";
+				String notPreassignedStudentsString = "";
+
 				for(int i = 0; i < allStudentsList.size(); i++){
 					allStudentsString = allStudentsString + allStudentsList.get(i) + "\n";
 				}
@@ -169,21 +194,36 @@ public class GUI {
 				for(int k = 0; k < notPreassignedStudentsList.size(); k++){
 					notPreassignedStudentsString = notPreassignedStudentsString + notPreassignedStudentsList.get(k) + "\n";
 				}
-				
-				Object[] whichType = { "Preassigned Students" , "Not preassigned Students", "All Students"};
-				Object listType = JOptionPane.showInputDialog(null,"Choose one", "How would you like that list Sorted?",
-			             JOptionPane.INFORMATION_MESSAGE, null,
-			             whichType, whichType[0]);
-				//Component com = allStudentsString;
-				if(listType.toString() == "Preassigned Students"){
-					JOptionPane.showMessageDialog(null, preassignedStudentsString);
-				}else if(listType.toString() == "Not preassigned Students"){
-					JOptionPane.showMessageDialog(null, notPreassignedStudentsString);
-				}else if(listType.toString() == "All Students"){
-					JScrollPane pane = new JScrollPane();
-					JOptionPane.showMessageDialog(null, allStudentsString);//, JOptionPane.OK_OPTION);
-				}else{
-					//JOptionPane.c
+				try{
+					Object[] whichType = { "Preassigned Students" , "Not preassigned Students", "All Students"};
+					Object listType = JOptionPane.showInputDialog(null,"Choose one", "How would you like that list Sorted?",
+							JOptionPane.INFORMATION_MESSAGE, null,
+							whichType, whichType[0]);
+					JTextArea textArea = new JTextArea(30, 15);
+					if(listType.toString() == "Preassigned Students"){
+						textArea = new JTextArea(15, 15);
+						textArea.setText(preassignedStudentsString);
+						textArea.setEditable(false);
+						JScrollPane scrollPane = new JScrollPane(textArea);
+						scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+						JOptionPane.showMessageDialog(null, scrollPane, "Students with Preassigned Projects",  JOptionPane.INFORMATION_MESSAGE);
+
+					}else if(listType.toString() == "Not preassigned Students"){
+						textArea.setText(notPreassignedStudentsString);
+						textArea.setEditable(false);
+						JScrollPane scrollPane = new JScrollPane(textArea);
+						scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+						JOptionPane.showMessageDialog(null, scrollPane, "Students without Preassigned Projects",  JOptionPane.INFORMATION_MESSAGE);
+
+					}else if(listType.toString() == "All Students"){
+						textArea.setText(allStudentsString);
+						textArea.setEditable(false);
+						JScrollPane scrollPane = new JScrollPane(textArea);
+						scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+						JOptionPane.showMessageDialog(null, scrollPane, "All Students",  JOptionPane.INFORMATION_MESSAGE);
+					}
+				}catch(NullPointerException exc){
+
 				}
 			}
 		});
@@ -215,7 +255,7 @@ public class GUI {
 		JLabel label = new JLabel("");
 		label.setBounds(54, 38, 46, 14);
 		frame.getContentPane().add(label);
-		
+
 		JButton btnSimulatedAnnealing = new JButton("Simulated Annealing");
 		btnSimulatedAnnealing.createToolTip();
 		btnSimulatedAnnealing.setToolTipText("Takes around 1:40 - 2 minutes");
@@ -227,7 +267,7 @@ public class GUI {
 		btnSimulatedAnnealing.setForeground(Color.BLACK);
 		btnSimulatedAnnealing.setBounds(247, 156, 150, 30);
 		frame.getContentPane().add(btnSimulatedAnnealing);
-		
+
 		JButton btnGeneticAlgorithm = new JButton("Genetic Algorithm");
 		btnGeneticAlgorithm.createToolTip();
 		btnGeneticAlgorithm.setToolTipText("Takes around 1:50 - 2:10 minutes");
@@ -240,15 +280,15 @@ public class GUI {
 				String energy = Integer.toString(geneticSolver.getEnergy());
 				//final long endTime = System.currentTimeMillis();
 				//System.out.println("Total execution time: " + (endTime - startTime) );
-				printResult(results,energy);
+				printResult(results,energy,solution);
 			}
-			});
+		});
 		btnGeneticAlgorithm.setForeground(Color.BLACK);
 		btnGeneticAlgorithm.setBounds(247, 211, 150, 30);
 		frame.getContentPane().add(btnGeneticAlgorithm);
-		
-		
-		
+
+
+
 		JLabel lblFileName = new JLabel("File name:");
 		lblFileName.setForeground(Color.BLUE);
 		lblFileName.setFont(new Font("Tahoma", Font.PLAIN, 10));
@@ -259,7 +299,7 @@ public class GUI {
 		userInput.setBounds(10, 32, 150, 20);
 		frame.getContentPane().add(userInput);
 		userInput.setColumns(10);
-		
+
 		JButton btnEnter = new JButton("Enter");
 		btnEnter.setForeground(Color.GRAY);
 		btnEnter.setFont(new Font("Tahoma", Font.ITALIC, 7));
@@ -274,32 +314,32 @@ public class GUI {
 		});
 		btnEnter.setBounds(162, 56, 59, 14);
 		frame.getContentPane().add(btnEnter);
-		
+
 		JLabel lbltsv = new JLabel(".tsv");
 		lbltsv.setBounds(162, 38, 46, 14);
 		frame.getContentPane().add(lbltsv);
-		
+
 		JLabel lblDefaultFileProject = new JLabel("Default file: Project Allocation Data");
 		lblDefaultFileProject.setFont(new Font("Tahoma", Font.ITALIC, 8));
 		lblDefaultFileProject.setBounds(10, 56, 179, 14);
 		frame.getContentPane().add(lblDefaultFileProject);
-		
+
 		JLabel lblChooseAnAlgorithm = new JLabel("Choose an algorithm to run:");
 		lblChooseAnAlgorithm.setBounds(247, 131, 179, 14);
 		frame.getContentPane().add(lblChooseAnAlgorithm);
-		
+
 		JSeparator separator = new JSeparator();
 		separator.setBounds(10, 97, 416, 5);
 		frame.getContentPane().add(separator);
 	}
-	private void printResult(int[] results, String energy){
+	private void printResult(int[] results, String energy,CandidateSolution solution){
 		String percentage;
 		String output = "The results are: \n";
 		float total = 0;
-		
+
 		for(int i = 1; i < results.length; i++){ //start at one to ignore num of students
 			float num = (float) results[i]*100/results[0];
-			 
+
 			percentage = String.format("%.01f", num);//String.valueOf(num); //Integer.toString(results[i]/results[0]);
 			if(i == 1){
 				output = output + percentage + "% of students got their 1st choice \n";
@@ -311,19 +351,33 @@ public class GUI {
 			}
 			else if(i == 3){
 				output = output + percentage + "% of students got their 3rd choice \n";
-//				output = output + results[i] + " students got their 3rd choice \n";
+				//				output = output + results[i] + " students got their 3rd choice \n";
 			}
 			else{
 				output = output + percentage + "% of students got their "+ Integer.toString(i) +"th choice \n";
-//				output = output + results[i] + " students got their "+ Integer.toString(i) +"th choice \n";
+				//				output = output + results[i] + " students got their "+ Integer.toString(i) +"th choice \n";
 			}
 			total = total + num;
 		}
-		output = output + "The energy is " + energy;
-		//output = output + "The total % is " + Float.toString(total);
-		JOptionPane.showMessageDialog(null, output);
+		output = output + "The energy is " + energy +"\n";
+		output = output + "Would you like to save Resutls to a file ";
+		try{
+			//Options
+			//JOptionPane.showMessageDialog(null, output);
+			//JOptionPane.showMessageDialog(null, output, "Results", JOptionPane.OK_CANCEL_OPTION);
+			Object[] whichType = {"Save" , "Disgard"};
+			Object listType = JOptionPane.showInputDialog(null,output, "Results",
+					JOptionPane.QUESTION_MESSAGE, null,
+					whichType, whichType[0]);
+			if(listType =="Save"){
+				save(solution);
+			}
+		}catch(NullPointerException exception){
+
+		}
+
 	}	
-	
+
 	public int[] compileResults(CandidateSolution bestSolution){
 		//size 11 make first slot num of students then result/num of student = %
 		int[] results = new int[11];
@@ -365,12 +419,26 @@ public class GUI {
 		}
 		return results;
 	}
-	
+
 	private void runSimAnn(){
-			SimulatedAnnealing sa = new SimulatedAnnealing(table);
-			CandidateSolution solution = sa.saSolution();
-			int[] results = compileResults(solution);
-			String energy = Integer.toString(solution.getEnergy());
-			printResult(results,energy);
+		SimulatedAnnealing sa = new SimulatedAnnealing(table);
+		CandidateSolution solution = sa.saSolution();
+		int[] results = compileResults(solution);
+		String energy = Integer.toString(solution.getEnergy());
+		printResult(results,energy,solution);
+	}
+
+	private void save(CandidateSolution solution){
+		Vector<CandidateAssignment> assignments = solution.getAllCandiates();
+		String results = "Results.txt";
+		try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+				new FileOutputStream(results), "utf-8"))) {
+			writer.write("The Forth Year Project Allocations are: \n");
+			for(CandidateAssignment assignment : assignments){
+				writer.write(assignment.toString() + "\n");
+			}
+		}catch(IOException e){
+
 		}
+	}
 }
