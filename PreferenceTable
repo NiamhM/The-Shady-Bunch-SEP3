@@ -261,7 +261,7 @@ public class PreferenceTable {
 		return preAssignedStudents;
 	}	
 	
-	public void removePreAssignedPreferences(){
+		public void removePreAssignedPreferences(){
 		Vector<StudentEntry> allStudentEntries = getAllStuderntEntries();
 		Vector<String> studentPreferences = new Vector<String>();
 		
@@ -269,14 +269,12 @@ public class PreferenceTable {
 			studentPreferences = allStudentEntries.elementAt(i).getOrderedPreference();
 			for(int j = 0; j < studentPreferences.size(); j++){
 				if(preassignedList.contains(studentPreferences.elementAt(j)) && allStudentEntries.elementAt(i).hasPreassignedProject() == false){
-					for (int k = j; k<studentPreferences.size()-1; k++){
-						studentPreferences.setElementAt(studentPreferences.elementAt(k+1), k);
-					}
-					studentPreferences.removeElementAt(studentPreferences.size()-1);
+					studentPreferences.removeElementAt(j);
 				}
 			}
 		}
 	}
+	
 	
 	public Vector<String> findInvalidEntries(){
 		Vector<StudentEntry> allStudentEntries = getAllStuderntEntries();
