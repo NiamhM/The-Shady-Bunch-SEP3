@@ -1,0 +1,27 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class PopUpWindow{	
+  public void popUp(double j){
+	  	final JLabel label = new JLabel();
+		int timerDelay = 500;
+		String test = j +"% COMPLETED!";
+		new Timer(timerDelay, new ActionListener(){
+			int timeLeft = 2;
+			public void actionPerformed(ActionEvent e){
+				if(timeLeft > 0){
+					System.out.println(timeLeft + timerDelay);
+					label.setText(test);
+					timeLeft--;
+				}else{
+					((Timer)e.getSource()).stop();
+					Window win = SwingUtilities.getWindowAncestor(label);
+					win.setVisible(false);
+				}
+			}
+		}){private static final long serialVersionUID = 1L;
+		{setInitialDelay(0);}}.start();
+			JOptionPane.showMessageDialog(null, label);	
+  }
+}
