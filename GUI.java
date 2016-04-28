@@ -3,9 +3,9 @@ import java.awt.EventQueue;
 import javax.annotation.processing.FilerException;
 import javax.swing.JFrame;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
@@ -14,6 +14,7 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Window;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -238,7 +239,7 @@ public class GUI {
 			}
 		});
 		btnExit.setForeground(Color.RED);
-		btnExit.setBounds(318, 300, 79, 42);
+		btnExit.setBounds(179, 300, 79, 42);
 		frame.getContentPane().add(btnExit);
 
 		JButton btnDefault = new JButton("Allocate Projects");
@@ -248,7 +249,7 @@ public class GUI {
 			}
 		});
 		btnDefault.setForeground(Color.RED);
-		btnDefault.setBounds(290, 38, 136, 49);
+		btnDefault.setBounds(301, 30, 113, 42);
 		//btnDefault.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		frame.getContentPane().add(btnDefault);
 
@@ -265,7 +266,7 @@ public class GUI {
 			}
 		});
 		btnSimulatedAnnealing.setForeground(Color.BLACK);
-		btnSimulatedAnnealing.setBounds(247, 156, 150, 30);
+		btnSimulatedAnnealing.setBounds(247, 127, 150, 30);
 		frame.getContentPane().add(btnSimulatedAnnealing);
 
 		JButton btnGeneticAlgorithm = new JButton("Genetic Algorithm");
@@ -284,53 +285,83 @@ public class GUI {
 			}
 		});
 		btnGeneticAlgorithm.setForeground(Color.BLACK);
-		btnGeneticAlgorithm.setBounds(247, 211, 150, 30);
+		btnGeneticAlgorithm.setBounds(247, 182, 150, 30);
 		frame.getContentPane().add(btnGeneticAlgorithm);
 
-
-
-		JLabel lblFileName = new JLabel("File name:");
-		lblFileName.setForeground(Color.BLUE);
-		lblFileName.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		lblFileName.setBounds(10, 13, 79, 14);
-		frame.getContentPane().add(lblFileName);
-
 		userInput = new JTextField();
-		userInput.setBounds(10, 32, 150, 20);
+		userInput.setBounds(247, 250, 150, 20);
 		frame.getContentPane().add(userInput);
 		userInput.setColumns(10);
 
-		JButton btnEnter = new JButton("Enter");
+		JButton btnEnter = new JButton("Go");
 		btnEnter.setForeground(Color.GRAY);
 		btnEnter.setFont(new Font("Tahoma", Font.ITALIC, 7));
 		btnEnter.createToolTip();
 		btnEnter.setToolTipText("NOTE: Can only be pressed once!");
 		btnEnter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String input = userInput.getText() + ".tsv";
-				initialize(input);
-				btnEnter.setEnabled(false);
+				String projectName = userInput.getText();
+				Vector<String> students = table.listStudentsByProject(projectName);
+				String listOfStudents = "";
+
+				for(int i = 0; i < students.size(); i++){
+					listOfStudents = listOfStudents + students.get(i) + "\n";
+				}
+				JOptionPane.showMessageDialog(null, listOfStudents, "Students that chose:" + projectName, JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
-		btnEnter.setBounds(162, 56, 59, 14);
+		btnEnter.setBounds(291, 281, 59, 14);
 		frame.getContentPane().add(btnEnter);
 
-		JLabel lbltsv = new JLabel(".tsv");
-		lbltsv.setBounds(162, 38, 46, 14);
-		frame.getContentPane().add(lbltsv);
-
-		JLabel lblDefaultFileProject = new JLabel("Default file: Project Allocation Data");
-		lblDefaultFileProject.setFont(new Font("Tahoma", Font.ITALIC, 8));
-		lblDefaultFileProject.setBounds(10, 56, 179, 14);
-		frame.getContentPane().add(lblDefaultFileProject);
-
 		JLabel lblChooseAnAlgorithm = new JLabel("Choose an algorithm to run:");
-		lblChooseAnAlgorithm.setBounds(247, 131, 179, 14);
+		lblChooseAnAlgorithm.setBounds(247, 109, 179, 14);
 		frame.getContentPane().add(lblChooseAnAlgorithm);
 
 		JSeparator separator = new JSeparator();
 		separator.setBounds(10, 97, 416, 5);
 		frame.getContentPane().add(separator);
+
+		JButton fileSelection = new JButton("Choose File");
+		fileSelection.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JFileChooser openFile = new JFileChooser();
+				openFile.showOpenDialog(null);
+
+				File file = openFile.getSelectedFile();
+				String fileName = file.getName();
+				System.out.println(fileName);
+
+				int index = fileName.lastIndexOf('.');
+				String fileExtension = fileName.substring(index + 1);
+				System.out.println(fileExtension);
+				
+				if(fileExtension.equals("tsv")){
+					initialize(fileName);
+				}
+				
+				else{
+					JOptionPane.showMessageDialog(openFile, "Invalid choice, must be .tsv :(\nTry again or use the default:\nProject allocation data.tsv");
+				}
+			}
+		});
+		fileSelection.setBounds(10, 11, 150, 30);
+		frame.getContentPane().add(fileSelection);
+		
+		JLabel lblDefaultFileProject = new JLabel("Default file: ");
+		lblDefaultFileProject.setBounds(10, 44, 150, 14);
+		frame.getContentPane().add(lblDefaultFileProject);
+		
+		JLabel lblProjectAllocationDatatsv = new JLabel("Project allocation data.tsv");
+		lblProjectAllocationDatatsv.setBounds(10, 58, 126, 14);
+		frame.getContentPane().add(lblProjectAllocationDatatsv);
+		
+		JLabel lblSearchWhichStudent = new JLabel("Search which students ");
+		lblSearchWhichStudent.setBounds(247, 225, 179, 14);
+		frame.getContentPane().add(lblSearchWhichStudent);
+		
+		JLabel lblChoseASpecific = new JLabel("chose a specific project:");
+		lblChoseASpecific.setBounds(247, 235, 137, 17);
+		frame.getContentPane().add(lblChoseASpecific);
 	}
 	private void printResult(int[] results, String energy,CandidateSolution solution){
 		String percentage;
