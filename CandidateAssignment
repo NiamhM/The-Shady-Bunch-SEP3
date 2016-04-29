@@ -27,14 +27,13 @@ public class CandidateAssignment {
 		return student;
 	}
 	public String toString(){
-		String result = student.getStudentName() + " " + getAssignedProject() + "\n";
+		String result = student.getStudentName() + "\t \t" + getAssignedProject() + "\n";
 		return result;
 	}
 	
 	public int getEnergy(){
-		int energy = student.getRanking(currentAssignment);
-		energy = (energy+1)*(energy+1);
-		return energy;
+		int energy = student.getRanking(currentAssignment) + 1;
+		return energy*energy;
 	}
 	public int compareTo(CandidateSolution other){
 		if(this.getEnergy() == other.getEnergy()){
