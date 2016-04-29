@@ -44,18 +44,20 @@ public class CandidateSolution {
 		int energy = 0;
 		int penalty = 0;
 		String project;
-		Hashtable<StudentEntry,String> hash = new Hashtable<StudentEntry,String>();
+		//Hashtable<StudentEntry,String> hash = new Hashtable<StudentEntry,String>();
+		Vector<String> projectsAssigned = new Vector<>();
 		
 		for(CandidateAssignment cand: allCandidates){
 			energy = energy + cand.getEnergy();
 			project = cand.getAssignedProject();
-			if(hash.containsValue(project)){ 
-				penalty = penalty + DUPLICATE_PROJECT_PENALTY;
+			//if(hash.containsValue(project)){ 
+			if(projectsAssigned.contains(project)){
+				penalty += DUPLICATE_PROJECT_PENALTY;
 			}
-			hash.put(cand.getStudentEntry(), cand.getAssignedProject());
+			//hash.put(cand.getStudentEntry(), cand.getAssignedProject());
+			projectsAssigned.add(cand.getAssignedProject());
 		}
-		energy = energy + penalty;
-		return energy;
+		return energy + penalty;
 	}
 	
 	public int getFitness(){
