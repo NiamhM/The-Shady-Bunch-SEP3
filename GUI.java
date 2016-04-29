@@ -15,9 +15,12 @@ import java.awt.Font;
 import java.awt.Window;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 import javax.swing.JOptionPane;
@@ -249,7 +252,7 @@ public class GUI {
 			}
 		});
 		btnDefault.setForeground(Color.RED);
-		btnDefault.setBounds(301, 30, 113, 42);
+		btnDefault.setBounds(291, 30, 113, 42);
 		//btnDefault.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		frame.getContentPane().add(btnDefault);
 
@@ -277,10 +280,10 @@ public class GUI {
 				GeneticAlgSolver geneticSolver = new GeneticAlgSolver(table);
 				CandidateSolution solution = geneticSolver.run();
 				int[] results = compileResults(solution);
-				//final long startTime = System.currentTimeMillis();
+				final long startTime = System.nanoTime();
 				String energy = Integer.toString(geneticSolver.getEnergy());
-				//final long endTime = System.currentTimeMillis();
-				//System.out.println("Total execution time: " + (endTime - startTime) );
+				final long endTime = System.nanoTime();
+				System.out.println("Total execution time: " + (endTime - startTime)/1000000000);
 				printResult(results,energy,solution);
 			}
 		});
@@ -318,7 +321,7 @@ public class GUI {
 		frame.getContentPane().add(lblChooseAnAlgorithm);
 
 		JSeparator separator = new JSeparator();
-		separator.setBounds(10, 97, 416, 5);
+		separator.setBounds(10, 93, 416, 5);
 		frame.getContentPane().add(separator);
 
 		JButton fileSelection = new JButton("Choose File");
@@ -334,33 +337,33 @@ public class GUI {
 				int index = fileName.lastIndexOf('.');
 				String fileExtension = fileName.substring(index + 1);
 				System.out.println(fileExtension);
-				
+
 				if(fileExtension.equals("tsv")){
 					initialize(fileName);
 				}
-				
+
 				else{
 					JOptionPane.showMessageDialog(openFile, "Invalid choice, must be .tsv :(\nTry again or use the default:\nProject allocation data.tsv");
 				}
 			}
 		});
-		fileSelection.setBounds(10, 11, 150, 30);
+		fileSelection.setBounds(10, 36, 150, 30);
 		frame.getContentPane().add(fileSelection);
-		
+
 		JLabel lblDefaultFileProject = new JLabel("Default file: ");
-		lblDefaultFileProject.setBounds(10, 44, 150, 14);
+		lblDefaultFileProject.setBounds(10, 11, 150, 14);
 		frame.getContentPane().add(lblDefaultFileProject);
-		
+
 		JLabel lblProjectAllocationDatatsv = new JLabel("Project allocation data.tsv");
-		lblProjectAllocationDatatsv.setBounds(10, 58, 126, 14);
+		lblProjectAllocationDatatsv.setBounds(10, 24, 150, 14);
 		frame.getContentPane().add(lblProjectAllocationDatatsv);
-		
+
 		JLabel lblSearchWhichStudent = new JLabel("Search which students ");
 		lblSearchWhichStudent.setBounds(247, 225, 179, 14);
 		frame.getContentPane().add(lblSearchWhichStudent);
-		
+
 		JLabel lblChoseASpecific = new JLabel("chose a specific project:");
-		lblChoseASpecific.setBounds(247, 235, 137, 17);
+		lblChoseASpecific.setBounds(247, 235, 150, 17);
 		frame.getContentPane().add(lblChoseASpecific);
 	}
 	private void printResult(int[] results, String energy,CandidateSolution solution){
@@ -391,12 +394,12 @@ public class GUI {
 			total = total + num;
 		}
 		output = output + "The energy is " + energy +"\n";
-		output = output + "Would you like to save Resutls to a file ";
+		output = output + "Would you like to save Results to a file ";
 		try{
 			//Options
 			//JOptionPane.showMessageDialog(null, output);
 			//JOptionPane.showMessageDialog(null, output, "Results", JOptionPane.OK_CANCEL_OPTION);
-			Object[] whichType = {"Save" , "Disgard"};
+			Object[] whichType = {"Save" , "Discard"};
 			Object listType = JOptionPane.showInputDialog(null,output, "Results",
 					JOptionPane.QUESTION_MESSAGE, null,
 					whichType, whichType[0]);
@@ -453,23 +456,43 @@ public class GUI {
 
 	private void runSimAnn(){
 		SimulatedAnnealing sa = new SimulatedAnnealing(table);
+		//		long averageTime = 0;
+		//		int averageEnergy = 0;
+		//		long time = 0;
+		//		int energy = 0;
+		//for(int i = 1; i <= 5; i++){
+		long startTime = System.nanoTime();
 		CandidateSolution solution = sa.saSolution();
+		long endTime = System.nanoTime();
+		long timeTaken = (endTime - startTime)/1000000000;
+		System.out.println("Total execution time: " + timeTaken);
+		//			averageEnergy += solution.getEnergy();
+		//			averageTime += timeTaken;
+
 		int[] results = compileResults(solution);
 		String energy = Integer.toString(solution.getEnergy());
 		printResult(results,energy,solution);
+		//			time = averageTime/i;
+		//			System.out.println("Average time taken: " + time);
+		//			energy = averageEnergy/i;
+		//			System.out.println("Average energy: " + energy);
+		//}
+
 	}
 
 	private void save(CandidateSolution solution){
 		Vector<CandidateAssignment> assignments = solution.getAllCandiates();
-		String results = "Results.txt";
-		try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(results), "utf-8"))) {
-			writer.write("The Forth Year Project Allocations are: \n");
-			for(CandidateAssignment assignment : assignments){
-				writer.write(assignment.toString() + "\n");
-			}
-		}catch(IOException e){
-
+		PrintWriter writer = null;
+		
+		try {
+			writer = new PrintWriter("Project Allocations.txt", "UTF-8");
+		} catch (FileNotFoundException | UnsupportedEncodingException e) {
+			e.printStackTrace();
 		}
+		for(CandidateAssignment assignment : assignments){
+			writer.println(assignment.toString());
+		}
+		JOptionPane.showMessageDialog(userInput, "Results saved to:\nProject Allocations.txt");
+		writer.close();
 	}
 }
