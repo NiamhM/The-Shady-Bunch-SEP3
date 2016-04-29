@@ -1,12 +1,15 @@
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 
 public class PopUpWindow{	
-  public void popUp(double j){
+  @SuppressWarnings("serial")
+public void popUp(double j){
 	  	final JLabel label = new JLabel();
 		int timerDelay = 500;
 		String test = j +"% COMPLETED!";
+		
 		new Timer(timerDelay, new ActionListener(){
 			int timeLeft = 2;
 			public void actionPerformed(ActionEvent e){
@@ -15,13 +18,17 @@ public class PopUpWindow{
 					label.setText(test);
 					timeLeft--;
 				}else{
+					try{
 					((Timer)e.getSource()).stop();
 					Window win = SwingUtilities.getWindowAncestor(label);
 					win.setVisible(false);
+					win.dispose();
+					}catch(NullPointerException h){
+						
+					}
 				}
 			}
-		}){private static final long serialVersionUID = 1L;
-		{setInitialDelay(0);}}.start();
+		}){{setInitialDelay(0);}}.start();
 			JOptionPane.showMessageDialog(null, label);	
-  }
+		}
 }
