@@ -4,7 +4,7 @@ import javax.print.attribute.ResolutionSyntax;
 
 public class SimulatedAnnealing {
 	private CandidateSolution CS;
-	PopUpWindow popup = new PopUpWindow();
+//	PopUpWindow popup = new PopUpWindow();
 	public SimulatedAnnealing(PreferenceTable p) {
 		CS = new CandidateSolution(p);
 	}
@@ -12,17 +12,17 @@ public class SimulatedAnnealing {
 	public CandidateSolution saSolution(){
 		int newEnergy;
 		int currentEnergy = CS.getEnergy();
-		int a = 0;
-		int count = 0;
-		for(double temp = 1000; temp >=0; temp -= 0.0001){
-			int j = 1000000;
-			if(a % j == 0){
-				a = a/100000;
-				a = a*count;
-				popup.popUp(a);
-				count++;
-			}
-			a++;
+//		int a = 0;
+//		int count = 0;
+		for(double temp = 1050; temp >=0; temp -= 0.0001){
+//			int j = 1000000;
+//			if(a % j == 0){
+//				a = a/100000;
+//				a = a*count;
+//				popup.popUp(a);
+//				count++;
+//			}
+//			a++;
 			Random RND = new Random();
 			int num = RND.nextInt(CS.getAllCandiates().size());
 
@@ -35,14 +35,14 @@ public class SimulatedAnnealing {
 
 			if(newEnergy >= currentEnergy && !(boltzmann(temp, changeInEnergy))){
 				C.undoChange();
-				CS.getAllCandiates().setElementAt(C, num);
+				//CS.getAllCandiates().setElementAt(C, num);
 			}
 
 			else{
 				currentEnergy = newEnergy;
 			}
 		}
-		System.out.println("ENERGY: " + CS.getEnergy());
+		System.out.println("Energy: " + CS.getEnergy());
 		return CS;
 	}
 	
