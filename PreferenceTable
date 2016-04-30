@@ -307,13 +307,12 @@ public class PreferenceTable {
 	
 	
 	public static void main(String[] args) throws IOException {
-		PreferenceTable table = new PreferenceTable("Project allocation Data.TSV");
-		CandidateSolution solution = new CandidateSolution(table);
-		//table.fillPreferencesOfAll(10);		
-		StudentEntry student = new StudentEntry("Mr. Darcy");
-		CandidateAssignment cand = new CandidateAssignment(student);	
-		
-		System.out.println();
+		PreferenceTable table = new PreferenceTable("Project allocation Data.TSV");	
+		Vector<Vector<String>> allprefs = table.getPrefTable();
+		for(Vector<String> line : allprefs){ 		//create hash table in preferenceTable
+			table.addToHash(line.firstElement());	//need hash to use getAllStudentEntries
+		}
+//		CandidateSolution solution = new CandidateSolution(table);
 //		System.out.println(student.getOrderedPreference());
 //
 //		System.out.println("\nStudent name: "+ student.getStudentName());
@@ -329,55 +328,16 @@ public class PreferenceTable {
 //		System.out.println("\nEnergy for assigned project " + cand.getAssignedProject() + " is: " + cand.getEnergy());
 		Vector<StudentEntry> allStudents = table.getAllStuderntEntries();
 		allPreassignedProjects = table.findPreassignedProjects(allStudents);
-		System.out.println(allPreassignedProjects);
-		System.out.println("Energy of the Candidate Solution is: " + solution.getEnergy());
-		System.out.println("Fitness of the Candidate Solution is: " + solution.getFitness());
-		System.out.println("\nOrdered Projects: " + table.getAllProjects());
-		System.out.println("Invalid Entries: " + table.findInvalidEntries());
+
 		table.removePreAssignedPreferences();
 		TreeMap <String, Integer> orderedProjects = new TreeMap<String, Integer>();
 		orderedProjects = table.getAllProjects();
 		table.fillPreferencesOfAll(10, orderedProjects);
-		System.out.println("\n\n");
-		orderedProjects = table.getAllProjects();
-		
-		String[] numOrderedProjects = table.numericalSort(orderedProjects);
-		System.out.println("Numerically ordered projects: ");
-		for (int i = 0; i< numOrderedProjects.length; i++){
-			System.out.println(numOrderedProjects[i]);
-		}
-		System.out.println("\n\n");
-		table.getAllProjects();
-		
-		System.out.println(table.listOfStudentsNames());
-		System.out.println(table.listOfPreAssignedStudents());
-		System.out.println(table.listOfNonPreAssignedStudents());
-		System.out.println("\n\n");
-		
-		StudentEntry testStudent = table.getEntryFor("Queen Elizabeth I");
-		System.out.println(testStudent.getOrderedPreference().size());
-		Vector <String> testvec = testStudent.getOrderedPreference();
-		for (int j=0; j<testvec.size(); j++){
-			System.out.println(j + testvec.elementAt(j));
-		}
-		StudentEntry testStudent1 = table.getEntryFor("Mr. Darcy");
-		System.out.println(testStudent1.getOrderedPreference().size());
-		Vector <String> testvec1 = testStudent1.getOrderedPreference();
-		for (int j=0; j<testvec1.size(); j++){
-			System.out.println(j + testvec1.elementAt(j));
-		}
-		//System.out.println(table.getAllProjects());
-		StudentEntry test = table.getEntryFor("Severus Snape");
-		System.out.println(test.getOrderedPreference());
-		String testProject = "Recommendation Game 2";
-		System.out.println("Students With Recommendation Game 2 listed: " + table.listStudentsByProject(testProject));
-//		System.out.println("\n\n");
-//		table.getAllStuderntEntries();
-//		ArrayList<String> list = new ArrayList<>();
-//		list = table.listProjects("Preassigned");
-//		for(int i = 0; i < list.size(); i++){
-//			System.out.println(list.get(i));
-//		}
-//		System.out.println(preassignedList);
+//		StudentEntry testStudent2 = table.getEntryFor("Mr. Darcy");
+//		System.out.println(testStudent2.getOrderedPreference().size());
+//		StudentEntry student = new StudentEntry("Mr. Darcy");
+		CandidateSolution solution = new CandidateSolution(table);
+		System.out.println("Students With unlisted projects: " + solution.findUnlistedAssignments());
+
 	}
 }
