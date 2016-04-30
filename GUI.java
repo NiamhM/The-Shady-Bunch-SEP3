@@ -1,59 +1,32 @@
 import java.awt.EventQueue;
-
-import javax.annotation.processing.FilerException;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-
 import java.awt.event.ActionListener;
 import java.util.TreeMap;
 import java.util.Vector;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
-import java.awt.Window;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-
 import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-import javax.swing.JMenu;
 import javax.swing.JSeparator;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
 
 public class GUI {
 	private JFrame frame;
 	private static PreferenceTable table = new PreferenceTable("Project allocation Data.TSV");
 	private static TreeMap <String, Integer> orderedProjects = new TreeMap<String, Integer>();
-	private JTextField userInput;
-	/**
-	 * Launch the application.
-	 */
+	private JTextField userInputField;
+
 	public static void main(String[] args) {
-		//		CandidateSolution solution = new CandidateSolution(table);
-		//		Vector<StudentEntry> allStudents = table.getAllStuderntEntries();
-		//		//table.removePreAssignedPreferences();
-		//		orderedProjects = table.getAllProjects();
-		//		table.fillPreferencesOfAll(10, orderedProjects);
-		//		table.getAllProjects();
-		//		table.getAllStuderntEntries();
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -66,22 +39,14 @@ public class GUI {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
 	public GUI(String file) { 
 		initialize(file);
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	private void initialize(String file) {
 		String fileName = file;
 		table = new PreferenceTable(fileName);
 		CandidateSolution solution = new CandidateSolution(table);
-		Vector<StudentEntry> allStudents = table.getAllStuderntEntries();
-		//table.removePreAssignedPreferences();
 		orderedProjects = table.getAllProjects();
 		table.fillPreferencesOfAll(10, orderedProjects);
 		table.getAllProjects();
@@ -90,14 +55,13 @@ public class GUI {
 		frame = new JFrame("Fourth Year Project Allocator");
 		frame.getContentPane().setForeground(new Color(240, 255, 255));
 		frame.getContentPane().setBackground(new Color(235, 235, 235));
-		frame.setBounds(100, 100, 452, 392); 	//location and size
+		frame.setBounds(100, 100, 452, 392); 	
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
-		JButton btnProjectBy = new JButton("Project Lists");
-		//btnProjectBy.setFont(new Font("Tw Cen MT", Font.PLAIN, 13));
-		btnProjectBy.setForeground(Color.BLACK);
-		btnProjectBy.addActionListener(new ActionListener() {
+		JButton btnProjectLists = new JButton("Project Lists");
+		btnProjectLists.setForeground(Color.BLACK);
+		btnProjectLists.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Vector<String> preassignedProjectList = table.listProjects("Preassigned");
 				Vector<String> nonPreassignedProjectList = table.listProjects("Non-preassigned");
@@ -129,8 +93,6 @@ public class GUI {
 						JScrollPane scrollPane = new JScrollPane(textArea);
 						scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 						JOptionPane.showMessageDialog(null, scrollPane, "preassigned Projects",  JOptionPane.INFORMATION_MESSAGE);
-
-
 					}
 					else if (selectedValue.toString() == "Not-preassigned"){
 						textArea.setText(nonPreassignedProjects);
@@ -138,7 +100,6 @@ public class GUI {
 						JScrollPane scrollPane = new JScrollPane(textArea);
 						scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 						JOptionPane.showMessageDialog(null, scrollPane, "Not-preassigned Projects",  JOptionPane.INFORMATION_MESSAGE);
-
 					}
 					else if(selectedValue.toString() == "All" ){
 						textArea.setText(allProjects);
@@ -146,18 +107,16 @@ public class GUI {
 						JScrollPane scrollPane = new JScrollPane(textArea);
 						scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 						JOptionPane.showMessageDialog(null, scrollPane, "All projects",  JOptionPane.INFORMATION_MESSAGE);
-
 					}
 				}catch(NullPointerException ex){
-
 				}
 			}
 		});
-		btnProjectBy.setBounds(28, 182, 161, 30);
-		frame.getContentPane().add(btnProjectBy);
+		btnProjectLists.setBounds(28, 182, 161, 30);
+		frame.getContentPane().add(btnProjectLists);
 
-		JButton btnOrdredByPopularity = new JButton("Projects by Popularity");
-		btnOrdredByPopularity.addActionListener(new ActionListener() {
+		JButton btnProjectsByPopularity = new JButton("Projects by Popularity");
+		btnProjectsByPopularity.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				table.removePreAssignedPreferences();
 				orderedProjects = table.getAllProjects();
@@ -174,13 +133,12 @@ public class GUI {
 				JOptionPane.showMessageDialog(null, scrollPane, "Projects by populatity",  JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
-		//btnOrdredByPopularity.setFont(new Font("Tw Cen MT", Font.PLAIN, 11));
-		btnOrdredByPopularity.setForeground(Color.BLACK);
-		btnOrdredByPopularity.setBounds(28, 240, 161, 30);
-		frame.getContentPane().add(btnOrdredByPopularity);
+		btnProjectsByPopularity.setForeground(Color.BLACK);
+		btnProjectsByPopularity.setBounds(28, 240, 161, 30);
+		frame.getContentPane().add(btnProjectsByPopularity);
 
-		JButton btnListOsStudents = new JButton("Student Lists");
-		btnListOsStudents.addActionListener(new ActionListener() {
+		JButton btnStudentLists = new JButton("Student Lists");
+		btnStudentLists.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Vector<String> allStudentsList = table.listOfStudentsNames();
 				Vector<String> preassignedStudentsList = table.listOfPreAssignedStudents();
@@ -232,9 +190,9 @@ public class GUI {
 				}
 			}
 		});
-		btnListOsStudents.setForeground(Color.BLACK);
-		btnListOsStudents.setBounds(28, 127, 161, 30);
-		frame.getContentPane().add(btnListOsStudents);
+		btnStudentLists.setForeground(Color.BLACK);
+		btnStudentLists.setBounds(28, 127, 161, 30);
+		frame.getContentPane().add(btnStudentLists);
 
 		JButton btnExit = new JButton("EXIT");
 		btnExit.addActionListener(new ActionListener() {
@@ -246,16 +204,15 @@ public class GUI {
 		btnExit.setBounds(179, 300, 79, 42);
 		frame.getContentPane().add(btnExit);
 
-		JButton btnDefault = new JButton("Allocate Projects");
-		btnDefault.addActionListener(new ActionListener() {
+		JButton btnAllocateProjects = new JButton("Allocate Projects");
+		btnAllocateProjects.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				runSimAnn();
 			}
 		});
-		btnDefault.setForeground(Color.RED);
-		btnDefault.setBounds(263, 30, 141, 42);
-		//btnDefault.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		frame.getContentPane().add(btnDefault);
+		btnAllocateProjects.setForeground(Color.RED);
+		btnAllocateProjects.setBounds(263, 30, 141, 42);
+		frame.getContentPane().add(btnAllocateProjects);
 
 		JLabel label = new JLabel("");
 		label.setBounds(54, 38, 46, 14);
@@ -281,15 +238,8 @@ public class GUI {
 				GeneticAlgSolver geneticSolver = new GeneticAlgSolver(table);
 
 				int[] results = compileResults(solution);
-				//for(int i = 0; i < 10; i++){
-				final long startTime = System.nanoTime();
 				CandidateSolution solution = geneticSolver.run();
-				final long endTime = System.nanoTime();
-				//System.out.println("Total execution time: " + (endTime - startTime)/1000000000);
 				String energy = Integer.toString(geneticSolver.getEnergy());
-				//System.out.println("GA energy: " + energy);
-				//}
-
 				printResult(results,energy,solution);
 			}
 		});
@@ -297,19 +247,19 @@ public class GUI {
 		btnGeneticAlgorithm.setBounds(247, 182, 150, 30);
 		frame.getContentPane().add(btnGeneticAlgorithm);
 
-		userInput = new JTextField();
-		userInput.setBounds(247, 250, 150, 20);
-		frame.getContentPane().add(userInput);
-		userInput.setColumns(10);
+		userInputField = new JTextField();
+		userInputField.setBounds(247, 250, 150, 20);
+		frame.getContentPane().add(userInputField);
+		userInputField.setColumns(10);
 
-		JButton btnEnter = new JButton("Search");
-		btnEnter.setForeground(Color.BLACK);
-		btnEnter.setFont(new Font("Tahoma", Font.ITALIC, 7));
-		btnEnter.createToolTip();
-		btnEnter.setToolTipText("NOTE: Can only be pressed once!");
-		btnEnter.addActionListener(new ActionListener() {
+		JButton searchBtn = new JButton("Search");
+		searchBtn.setForeground(Color.BLACK);
+		searchBtn.setFont(new Font("Tahoma", Font.ITALIC, 7));
+		searchBtn.createToolTip();
+		searchBtn.setToolTipText("Search who wanted what");
+		searchBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String projectName = userInput.getText();
+				String projectName = userInputField.getText();
 				Vector<String> students = table.listStudentsByProject(projectName);
 				String listOfStudents = "";
 
@@ -319,8 +269,8 @@ public class GUI {
 				JOptionPane.showMessageDialog(null, listOfStudents, "Students that chose:" + projectName, JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
-		btnEnter.setBounds(336, 270, 59, 14);
-		frame.getContentPane().add(btnEnter);
+		searchBtn.setBounds(336, 270, 59, 14);
+		frame.getContentPane().add(searchBtn);
 
 		JLabel lblChooseAnAlgorithm = new JLabel("Choose an algorithm to run:");
 		lblChooseAnAlgorithm.setBounds(247, 109, 179, 14);
@@ -330,8 +280,8 @@ public class GUI {
 		separator.setBounds(10, 93, 416, 5);
 		frame.getContentPane().add(separator);
 
-		JButton fileSelection = new JButton("Choose New File");
-		fileSelection.addActionListener(new ActionListener() {
+		JButton btnFileSelection = new JButton("Choose New File");
+		btnFileSelection.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser openFile = new JFileChooser();
 				openFile.showOpenDialog(null);
@@ -339,24 +289,22 @@ public class GUI {
 				try{
 					File file = openFile.getSelectedFile();
 					String fileName = file.getName();
+					int index = fileName.lastIndexOf('.');
+					String fileExtension = fileName.substring(index + 1);
+
+					if(fileExtension.equals("tsv")){
+						initialize(fileName);
+					}
+					else{
+						JOptionPane.showMessageDialog(openFile, "Invalid choice, must be .tsv :(\nTry again or use the default:\nProject allocation data.tsv");
+					}
 				}catch(NullPointerException exception){
-
-				}
-
-				int index = fileName.lastIndexOf('.');
-				String fileExtension = fileName.substring(index + 1);
-
-				if(fileExtension.equals("tsv")){
-					initialize(fileName);
-				}
-
-				else{
-					JOptionPane.showMessageDialog(openFile, "Invalid choice, must be .tsv :(\nTry again or use the default:\nProject allocation data.tsv");
 				}
 			}
 		});
-		fileSelection.setBounds(10, 36, 150, 30);
-		frame.getContentPane().add(fileSelection);
+		
+		btnFileSelection.setBounds(10, 36, 150, 30);
+		frame.getContentPane().add(btnFileSelection);
 
 		JLabel lblDefaultFileProject = new JLabel("Default file: ");
 		lblDefaultFileProject.setBounds(10, 11, 150, 14);
@@ -385,28 +333,21 @@ public class GUI {
 			percentage = String.format("%.01f", num);//String.valueOf(num); //Integer.toString(results[i]/results[0]);
 			if(i == 1){
 				output = output + percentage + "% of students got their 1st choice \n";
-				//output = output + results[i] + "  students got their 1st choice \n";
 			}
 			else if(i == 2){
 				output = output + percentage + "% of students got their 2nd choice \n";
-				//output = output + results[i] + " students got their 2nd choice \n";
 			}
 			else if(i == 3){
 				output = output + percentage + "% of students got their 3rd choice \n";
-				//				output = output + results[i] + " students got their 3rd choice \n";
 			}
 			else{
 				output = output + percentage + "% of students got their "+ Integer.toString(i) +"th choice \n";
-				//				output = output + results[i] + " students got their "+ Integer.toString(i) +"th choice \n";
 			}
 			total = total + num;
 		}
 		output = output + "The energy is " + energy +"\n";
 		output = output + "Would you like to save Results to a file ";
 		try{
-			//Options
-			//JOptionPane.showMessageDialog(null, output);
-			//JOptionPane.showMessageDialog(null, output, "Results", JOptionPane.OK_CANCEL_OPTION);
 			Object[] whichType = {"Save" , "Discard"};
 			Object listType = JOptionPane.showInputDialog(null,output, "Results",
 					JOptionPane.QUESTION_MESSAGE, null,
@@ -415,9 +356,7 @@ public class GUI {
 				save(solution);
 			}
 		}catch(NullPointerException exception){
-
 		}
-
 	}	
 
 	public int[] compileResults(CandidateSolution bestSolution){
@@ -463,37 +402,28 @@ public class GUI {
 	}
 
 	private void runSimAnn(){
-		SimulatedAnnealing sa = new SimulatedAnnealing(table);
-		CandidateSolution bestSolution = sa.saSolution();
-		CandidateSolution solution;
-		int bestEnergy = bestSolution.getEnergy();
-		int currentEnergy;
-		
-//		long startTime = System.nanoTime();
-		for(int i = 0; i < 9; i++){
-			solution = sa.saSolution();
-			currentEnergy = solution.getEnergy();
+			SimulatedAnnealing sa = new SimulatedAnnealing(table);
+			CandidateSolution bestSolution = sa.saSolution();
+			CandidateSolution solution;
+			int bestEnergy = bestSolution.getEnergy();
+			int currentEnergy;
+			for(int i = 0; i < 9; i++){
+				solution = sa.saSolution();
+				currentEnergy = solution.getEnergy();
 
-			if(currentEnergy < bestEnergy){
-				bestSolution = solution;
-				bestEnergy = currentEnergy;
+				if(currentEnergy < bestEnergy){
+					bestSolution = solution;
+					bestEnergy = currentEnergy;
+				}
 			}
-		}
-//		long endTime = System.nanoTime();
-//		long timeTaken = (endTime - startTime)/1000000000;
-//		System.out.println("Energy: " + bestEnergy);
-//		System.out.println(timeTaken + " seconds");
-		
-		
-		int[] results = compileResults(bestSolution);
-		String energy = Integer.toString(bestEnergy);
-		printResult(results,energy,bestSolution);
+				int[] results = compileResults(bestSolution);
+				String energy = Integer.toString(bestEnergy);
+				printResult(results,energy,bestSolution);
 	}
 
 	private void save(CandidateSolution solution){
 		Vector<CandidateAssignment> assignments = solution.getAllCandiates();
 		PrintWriter writer = null;
-
 		try {
 			writer = new PrintWriter("Project Allocations.txt", "UTF-8");
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
@@ -502,7 +432,7 @@ public class GUI {
 		for(CandidateAssignment assignment : assignments){
 			writer.println(assignment.toString());
 		}
-		JOptionPane.showMessageDialog(userInput, "Results saved to:\nProject Allocations.txt");
+		JOptionPane.showMessageDialog(userInputField, "Results saved to:\nProject Allocations.txt");
 		writer.close();
 	}
 }
