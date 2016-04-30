@@ -5,6 +5,7 @@ public class StudentEntry {
 	private boolean hasPreassignedProject;
 	private int numberOfStatedPreferences;
 	private Vector<String> orderedPreferences = new Vector<String>();
+	private Vector<String> originalPreferences = new Vector<String>();
 	Vector<Vector<String>> PT =  PreferenceTable.getPrefTable();
 	private Random RND = new Random();
 
@@ -16,12 +17,16 @@ public class StudentEntry {
 					if(!(orderedPreferences.contains(row.elementAt(i+2)))){ //ensuring that we don't add duplicate projects
 						orderedPreferences.add(row.elementAt(i+2).intern()); //i+2 to ignore the student number and preassigned project 
 					}
+					if(!(originalPreferences.contains(row.elementAt(i+2)))){ //ensuring that we don't add duplicate projects
+						originalPreferences.add(row.elementAt(i+2).intern()); //i+2 to ignore the student number and preassigned project 
+					}
 				}
 				if(row.elementAt(1).equalsIgnoreCase("Yes")){
 					if((orderedPreferences.size() > 1)){
 						String assignedProject = orderedPreferences.firstElement();
 						orderedPreferences.clear();
 						orderedPreferences.add(assignedProject);
+						originalPreferences.add(assignedProject);
 					}
 					hasPreassignedProject = true;
 					PreferenceTable.makePreassignedProjectList(orderedPreferences.firstElement());
@@ -32,7 +37,6 @@ public class StudentEntry {
 				}
 			}	
 		}
-
 		numberOfStatedPreferences = orderedPreferences.size();
 	}
 
@@ -42,6 +46,10 @@ public class StudentEntry {
 
 	public Vector<String> getOrderedPreference(){
 		return orderedPreferences;
+	}
+	
+	public Vector<String> getOriginalPreferences(){
+		return originalPreferences;
 	}
 
 	public boolean preassignedProject(String pname){ //only has one preference and records it 
