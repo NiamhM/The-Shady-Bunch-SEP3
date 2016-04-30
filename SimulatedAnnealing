@@ -13,29 +13,26 @@ public class SimulatedAnnealing {
 
 	public CandidateSolution saSolution(){
 		int newEnergy;
-		int currentEnergy = cs.getEnergy();
-		for(double temp = 10; temp >=0; temp -= 0.0009){
-			if(temp == 10.0){
+		int energy = cs.getEnergy();
+		for(double temperature = 10; temperature >=0; temperature -= 0.00006){
+			if(temperature == 10.0){
 				p.popUp(popup);
 				popup = popup + 10;
 			}
-
 			Random RND = new Random();
-			int num = RND.nextInt(cs.getAllCandiates().size());
-
-			CandidateAssignment c = cs.getAllCandiates().get(num);
+			int randomNumber = RND.nextInt(cs.getAllCandiates().size());
+			CandidateAssignment c = cs.getAllCandiates().get(randomNumber);
 			c.randomiseAssignment();
-			cs.getAllCandiates().setElementAt(c, num);
+			cs.getAllCandiates().setElementAt(c, randomNumber);
 			newEnergy = cs.getEnergy();
-			
-			double changeInEnergy = currentEnergy - newEnergy;
+			double changeInEnergy = energy - newEnergy;
 
-			if(newEnergy >= currentEnergy && !(boltzmann(temp, changeInEnergy))){
+			if(newEnergy >= energy && !(boltzmann(temperature, changeInEnergy))){
 				c.undoChange();
 			}
 
 			else{
-				currentEnergy = newEnergy;
+				energy = newEnergy;
 			}
 		}
 		return cs;
@@ -44,7 +41,6 @@ public class SimulatedAnnealing {
 	private boolean boltzmann(double temp, double change){
 		Random r = new Random();
 		double randNum = r.nextDouble();
-		
 		double boltzmann = (Math.exp((change/temp)));
 		
 		if(boltzmann > randNum){
@@ -54,6 +50,4 @@ public class SimulatedAnnealing {
 			return false;
 		}
 	}
-	
-
 }
