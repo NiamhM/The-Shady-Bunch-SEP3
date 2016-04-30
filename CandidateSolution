@@ -44,26 +44,21 @@ public class CandidateSolution {
 		int energy = 0;
 		int penalty = 0;
 		String project;
-		//Hashtable<StudentEntry,String> hash = new Hashtable<StudentEntry,String>();
 		Vector<String> projectsAssigned = new Vector<>();
 		
 		for(CandidateAssignment cand: allCandidates){
 			energy = energy + cand.getEnergy();
 			project = cand.getAssignedProject();
-			//if(hash.containsValue(project)){ 
 			if(projectsAssigned.contains(project)){
 				penalty += DUPLICATE_PROJECT_PENALTY;
 			}
-			//hash.put(cand.getStudentEntry(), cand.getAssignedProject());
 			projectsAssigned.add(cand.getAssignedProject());
 		}
 		return energy + penalty;
 	}
 	
 	public int getFitness(){
-		int energy = getEnergy();
-		int fitness = energy*(-1);
-		return fitness;
+		return getEnergy()*(-1);
 	}
 	public int compareTo(CandidateSolution other){
 		if(this.getEnergy() == other.getEnergy()){
@@ -84,7 +79,6 @@ public class CandidateSolution {
 //		newCandidate.allCandidates.add(tempAssignment);
 		int energyOne;//= newCandidate.getEnergy();
 		int energyTwo;
-		newCandidate.allCandidates.clear();
 		for(int i = 0; i < allCandidates.size(); i++){
 			CandidateAssignment tempAssignment = allCandidates.get(i);
 			CandidateAssignment tempAssignment2 = secondCandidate.allCandidates.get(i);
