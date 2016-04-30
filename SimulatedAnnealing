@@ -3,52 +3,50 @@ import java.util.*;
 import javax.print.attribute.ResolutionSyntax;
 
 public class SimulatedAnnealing {
-	private CandidateSolution CS;
-//	PopUpWindow popup = new PopUpWindow();
+	private CandidateSolution cs;
+	PopUpWindow p = new PopUpWindow();
 	public SimulatedAnnealing(PreferenceTable p) {
-		CS = new CandidateSolution(p);
+		cs = new CandidateSolution(p);
 	}
 
 	public CandidateSolution saSolution(){
 		int newEnergy;
-		int currentEnergy = CS.getEnergy();
-//		int a = 0;
-//		int count = 0;
-		for(double temp = 1050; temp >=0; temp -= 0.0001){
-//			int j = 1000000;
-//			if(a % j == 0){
-//				a = a/100000;
-//				a = a*count;
-//				popup.popUp(a);
-//				count++;
-//			}
-//			a++;
+		int currentEnergy = cs.getEnergy();
+		int a = 0;
+		int count = 0;
+		for(double temp = 10; temp >=0; temp -= 0.00009){
+			int j = 1000000;
+			if(a % j == 0){
+				a = a/100000;
+				a = a*count;
+				p.popUp(a);
+				count++;
+			}
+			a++;
 			Random RND = new Random();
-			int num = RND.nextInt(CS.getAllCandiates().size());
+			int num = RND.nextInt(cs.getAllCandiates().size());
 
-			CandidateAssignment C = CS.getAllCandiates().get(num);
-			C.randomiseAssignment();
-			CS.getAllCandiates().setElementAt(C, num);
-			newEnergy = CS.getEnergy();
+			CandidateAssignment c = cs.getAllCandiates().get(num);
+			c.randomiseAssignment();
+			cs.getAllCandiates().setElementAt(c, num);
+			newEnergy = cs.getEnergy();
 			
 			double changeInEnergy = currentEnergy - newEnergy;
 
 			if(newEnergy >= currentEnergy && !(boltzmann(temp, changeInEnergy))){
-				C.undoChange();
-				//CS.getAllCandiates().setElementAt(C, num);
+				c.undoChange();
 			}
 
 			else{
 				currentEnergy = newEnergy;
 			}
 		}
-		System.out.println("Energy: " + CS.getEnergy());
-		return CS;
+		return cs;
 	}
 	
 	private boolean boltzmann(double temp, double change){
-		Random RND = new Random();
-		double randNum = RND.nextDouble();
+		Random r = new Random();
+		double randNum = r.nextDouble();
 		
 		double boltzmann = (Math.exp((change/temp)));
 		
