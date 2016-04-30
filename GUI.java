@@ -36,6 +36,7 @@ import javax.swing.JToolBar;
 import javax.swing.JMenu;
 import javax.swing.JSeparator;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 
 public class GUI {
 	private JFrame frame;
@@ -252,7 +253,7 @@ public class GUI {
 			}
 		});
 		btnDefault.setForeground(Color.RED);
-		btnDefault.setBounds(291, 30, 113, 42);
+		btnDefault.setBounds(263, 30, 141, 42);
 		//btnDefault.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		frame.getContentPane().add(btnDefault);
 
@@ -262,7 +263,7 @@ public class GUI {
 
 		JButton btnSimulatedAnnealing = new JButton("Simulated Annealing");
 		btnSimulatedAnnealing.createToolTip();
-		btnSimulatedAnnealing.setToolTipText("Takes around 1:40 - 2 minutes");
+		btnSimulatedAnnealing.setToolTipText("Takes around 30-70 seconds");
 		btnSimulatedAnnealing.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				runSimAnn();
@@ -278,12 +279,17 @@ public class GUI {
 		btnGeneticAlgorithm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				GeneticAlgSolver geneticSolver = new GeneticAlgSolver(table);
-				CandidateSolution solution = geneticSolver.run();
+
 				int[] results = compileResults(solution);
-				final long startTime = System.nanoTime();
-				String energy = Integer.toString(geneticSolver.getEnergy());
-				final long endTime = System.nanoTime();
-				System.out.println("Total execution time: " + (endTime - startTime)/1000000000);
+				//for(int i = 0; i < 10; i++){
+					final long startTime = System.nanoTime();
+					CandidateSolution solution = geneticSolver.run();
+					final long endTime = System.nanoTime();
+					//System.out.println("Total execution time: " + (endTime - startTime)/1000000000);
+					String energy = Integer.toString(geneticSolver.getEnergy());
+					//System.out.println("GA energy: " + energy);
+				//}
+
 				printResult(results,energy,solution);
 			}
 		});
@@ -296,8 +302,8 @@ public class GUI {
 		frame.getContentPane().add(userInput);
 		userInput.setColumns(10);
 
-		JButton btnEnter = new JButton("Go");
-		btnEnter.setForeground(Color.GRAY);
+		JButton btnEnter = new JButton("Search");
+		btnEnter.setForeground(Color.BLACK);
 		btnEnter.setFont(new Font("Tahoma", Font.ITALIC, 7));
 		btnEnter.createToolTip();
 		btnEnter.setToolTipText("NOTE: Can only be pressed once!");
@@ -313,7 +319,7 @@ public class GUI {
 				JOptionPane.showMessageDialog(null, listOfStudents, "Students that chose:" + projectName, JOptionPane.INFORMATION_MESSAGE);
 			}
 		});
-		btnEnter.setBounds(291, 281, 59, 14);
+		btnEnter.setBounds(336, 270, 59, 14);
 		frame.getContentPane().add(btnEnter);
 
 		JLabel lblChooseAnAlgorithm = new JLabel("Choose an algorithm to run:");
@@ -324,19 +330,21 @@ public class GUI {
 		separator.setBounds(10, 93, 416, 5);
 		frame.getContentPane().add(separator);
 
-		JButton fileSelection = new JButton("Choose File");
+		JButton fileSelection = new JButton("Choose New File");
 		fileSelection.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser openFile = new JFileChooser();
 				openFile.showOpenDialog(null);
 
+				try{
 				File file = openFile.getSelectedFile();
 				String fileName = file.getName();
-				System.out.println(fileName);
+				}catch(NullPointerException exception){
+
+				}
 
 				int index = fileName.lastIndexOf('.');
 				String fileExtension = fileName.substring(index + 1);
-				System.out.println(fileExtension);
 
 				if(fileExtension.equals("tsv")){
 					initialize(fileName);
@@ -456,34 +464,34 @@ public class GUI {
 
 	private void runSimAnn(){
 		SimulatedAnnealing sa = new SimulatedAnnealing(table);
-		//		long averageTime = 0;
-		//		int averageEnergy = 0;
-		//		long time = 0;
-		//		int energy = 0;
-		//for(int i = 1; i <= 5; i++){
+//		long averageTime = 0;
+//		int averageEnergy = 0;
+//		long time = 0;
+//		int energy = 0;
+		//for(int i = 1; i <= 20; i++){
 		long startTime = System.nanoTime();
 		CandidateSolution solution = sa.saSolution();
 		long endTime = System.nanoTime();
 		long timeTaken = (endTime - startTime)/1000000000;
-		System.out.println("Total execution time: " + timeTaken);
-		//			averageEnergy += solution.getEnergy();
-		//			averageTime += timeTaken;
+		//System.out.println("Total execution time: " + timeTaken);
+//		averageEnergy += solution.getEnergy();
+//		averageTime += timeTaken;
 
-		int[] results = compileResults(solution);
-		String energy = Integer.toString(solution.getEnergy());
-		printResult(results,energy,solution);
-		//			time = averageTime/i;
-		//			System.out.println("Average time taken: " + time);
-		//			energy = averageEnergy/i;
-		//			System.out.println("Average energy: " + energy);
-		//}
+				int[] results = compileResults(solution);
+				String energy = Integer.toString(solution.getEnergy());
+				printResult(results,energy,solution);
+		//					time = averageTime/i;
+		//					System.out.println("Average time taken: " + time);
+		//					energy = averageEnergy/i;
+		//					System.out.println("Average energy: " + energy);
+		////		}
 
 	}
 
 	private void save(CandidateSolution solution){
 		Vector<CandidateAssignment> assignments = solution.getAllCandiates();
 		PrintWriter writer = null;
-		
+
 		try {
 			writer = new PrintWriter("Project Allocations.txt", "UTF-8");
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
