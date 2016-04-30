@@ -282,12 +282,12 @@ public class GUI {
 
 				int[] results = compileResults(solution);
 				//for(int i = 0; i < 10; i++){
-					final long startTime = System.nanoTime();
-					CandidateSolution solution = geneticSolver.run();
-					final long endTime = System.nanoTime();
-					//System.out.println("Total execution time: " + (endTime - startTime)/1000000000);
-					String energy = Integer.toString(geneticSolver.getEnergy());
-					//System.out.println("GA energy: " + energy);
+				final long startTime = System.nanoTime();
+				CandidateSolution solution = geneticSolver.run();
+				final long endTime = System.nanoTime();
+				//System.out.println("Total execution time: " + (endTime - startTime)/1000000000);
+				String energy = Integer.toString(geneticSolver.getEnergy());
+				//System.out.println("GA energy: " + energy);
 				//}
 
 				printResult(results,energy,solution);
@@ -337,8 +337,8 @@ public class GUI {
 				openFile.showOpenDialog(null);
 
 				try{
-				File file = openFile.getSelectedFile();
-				String fileName = file.getName();
+					File file = openFile.getSelectedFile();
+					String fileName = file.getName();
 				}catch(NullPointerException exception){
 
 				}
@@ -464,28 +464,30 @@ public class GUI {
 
 	private void runSimAnn(){
 		SimulatedAnnealing sa = new SimulatedAnnealing(table);
-//		long averageTime = 0;
-//		int averageEnergy = 0;
-//		long time = 0;
-//		int energy = 0;
-		//for(int i = 1; i <= 20; i++){
-		long startTime = System.nanoTime();
-		CandidateSolution solution = sa.saSolution();
-		long endTime = System.nanoTime();
-		long timeTaken = (endTime - startTime)/1000000000;
-		//System.out.println("Total execution time: " + timeTaken);
-//		averageEnergy += solution.getEnergy();
-//		averageTime += timeTaken;
+		CandidateSolution bestSolution = sa.saSolution();
+		CandidateSolution solution;
+		int bestEnergy = bestSolution.getEnergy();
+		int currentEnergy;
+		
+//		long startTime = System.nanoTime();
+		for(int i = 0; i < 9; i++){
+			solution = sa.saSolution();
+			currentEnergy = solution.getEnergy();
 
-				int[] results = compileResults(solution);
-				String energy = Integer.toString(solution.getEnergy());
-				printResult(results,energy,solution);
-		//					time = averageTime/i;
-		//					System.out.println("Average time taken: " + time);
-		//					energy = averageEnergy/i;
-		//					System.out.println("Average energy: " + energy);
-		////		}
-
+			if(currentEnergy < bestEnergy){
+				bestSolution = solution;
+				bestEnergy = currentEnergy;
+			}
+		}
+//		long endTime = System.nanoTime();
+//		long timeTaken = (endTime - startTime)/1000000000;
+//		System.out.println("Energy: " + bestEnergy);
+//		System.out.println(timeTaken + " seconds");
+		
+		
+		int[] results = compileResults(bestSolution);
+		String energy = Integer.toString(bestEnergy);
+		printResult(results,energy,bestSolution);
 	}
 
 	private void save(CandidateSolution solution){
