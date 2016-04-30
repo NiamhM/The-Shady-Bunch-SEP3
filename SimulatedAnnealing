@@ -5,6 +5,8 @@ import javax.print.attribute.ResolutionSyntax;
 public class SimulatedAnnealing {
 	private CandidateSolution cs;
 	PopUpWindow p = new PopUpWindow();
+	double popup = 0;
+
 	public SimulatedAnnealing(PreferenceTable p) {
 		cs = new CandidateSolution(p);
 	}
@@ -12,17 +14,12 @@ public class SimulatedAnnealing {
 	public CandidateSolution saSolution(){
 		int newEnergy;
 		int currentEnergy = cs.getEnergy();
-		int a = 0;
-		int count = 0;
-		for(double temp = 10; temp >=0; temp -= 0.00009){
-			int j = 1000000;
-			if(a % j == 0){
-				a = a/100000;
-				a = a*count;
-				p.popUp(a);
-				count++;
+		for(double temp = 10; temp >=0; temp -= 0.0009){
+			if(temp == 10.0){
+				p.popUp(popup);
+				popup = popup + 10;
 			}
-			a++;
+
 			Random RND = new Random();
 			int num = RND.nextInt(cs.getAllCandiates().size());
 
