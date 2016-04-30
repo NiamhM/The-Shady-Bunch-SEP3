@@ -46,11 +46,17 @@ public class GUI {
 	private void initialize(String file) {
 		String fileName = file;
 		table = new PreferenceTable(fileName);
-		CandidateSolution solution = new CandidateSolution(table);
+		Vector<Vector<String>> allprefs = table.getPrefTable();
+		for(Vector<String> line : allprefs){ 		//create hash table in preferenceTable
+			table.addToHash(line.firstElement());	//need hash to use getAllStudentEntries
+		}
+		Vector<StudentEntry> allStudents = table.getAllStuderntEntries();
+		//table.removePreAssignedPreferences();
 		orderedProjects = table.getAllProjects();
 		table.fillPreferencesOfAll(10, orderedProjects);
 		table.getAllProjects();
 		table.getAllStuderntEntries();
+		CandidateSolution solution = new CandidateSolution(table);
 
 		frame = new JFrame("Fourth Year Project Allocator");
 		frame.getContentPane().setForeground(new Color(240, 255, 255));
