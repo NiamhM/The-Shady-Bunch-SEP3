@@ -1,6 +1,4 @@
-
 public class CandidateAssignment {
-	
 	private String prevAssignment = "";
 	private String currentAssignment = "";
 	private StudentEntry student;
@@ -18,14 +16,17 @@ public class CandidateAssignment {
 	public String getAssignedProject(){
 		return currentAssignment;
 	}
+	
 	public void undoChange(){
 		if(prevAssignment != ""){
 			currentAssignment = prevAssignment;
 		}
 	}
+	
 	public StudentEntry getStudentEntry(){
 		return student;
 	}
+	
 	public String toString(){
 		String result = student.getStudentName() + "\t \t" + getAssignedProject() + "\n";
 		return result;
@@ -35,6 +36,7 @@ public class CandidateAssignment {
 		int energy = student.getRanking(currentAssignment) + 1;
 		return energy*energy;
 	}
+	
 	public int compareTo(CandidateSolution other){
 		if(this.getEnergy() == other.getEnergy()){
 			return 0;
@@ -47,4 +49,3 @@ public class CandidateAssignment {
 		return 0;
 	}
 }
-
