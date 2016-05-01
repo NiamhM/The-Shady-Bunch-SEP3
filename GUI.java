@@ -26,7 +26,7 @@ public class GUI {
 	private static TreeMap <String, Integer> orderedProjects = new TreeMap<String, Integer>();
 	private JTextField userInputField;
 	private Boolean programStart = true;
-
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -45,7 +45,6 @@ public class GUI {
 	}
 
 	private void initialize() {
-
 		JFileChooser openFile = new JFileChooser();
 		openFile.showOpenDialog(null);
 		try{
@@ -78,14 +77,12 @@ public class GUI {
 		table.getAllProjects();
 		table.getAllStuderntEntries();
 		CandidateSolution solution = new CandidateSolution(table);
-
 		frame = new JFrame("Fourth Year Project Allocator");
 		frame.getContentPane().setForeground(new Color(240, 255, 255));
 		frame.getContentPane().setBackground(new Color(235, 235, 235));
 		frame.setBounds(100, 100, 452, 392); 	
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
-
 		JButton btnProjectLists = new JButton("Project Lists");
 		btnProjectLists.setForeground(Color.BLACK);
 		btnProjectLists.addActionListener(new ActionListener() {
@@ -93,7 +90,6 @@ public class GUI {
 				Vector<String> preassignedProjectList = table.listProjects("Preassigned");
 				Vector<String> nonPreassignedProjectList = table.listProjects("Non-preassigned");
 				Vector<String> allProjectsList  = table.listProjects("All");
-
 				String preassignedProjects = "";
 				for(int i = 0; i < preassignedProjectList.size(); i++){
 					preassignedProjects = preassignedProjects + preassignedProjectList.get(i) + "\n";
@@ -141,7 +137,6 @@ public class GUI {
 		});
 		btnProjectLists.setBounds(28, 182, 161, 30);
 		frame.getContentPane().add(btnProjectLists);
-
 		JButton btnProjectsByPopularity = new JButton("Projects by Popularity");
 		btnProjectsByPopularity.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -163,14 +158,12 @@ public class GUI {
 		btnProjectsByPopularity.setForeground(Color.BLACK);
 		btnProjectsByPopularity.setBounds(28, 240, 161, 30);
 		frame.getContentPane().add(btnProjectsByPopularity);
-
 		JButton btnStudentLists = new JButton("Student Lists");
 		btnStudentLists.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Vector<String> allStudentsList = table.listOfStudentsNames();
 				Vector<String> preassignedStudentsList = table.listOfPreAssignedStudents();
 				Vector<String> notPreassignedStudentsList = table.listOfNonPreAssignedStudents();
-
 				String allStudentsString = "";
 				String preassignedStudentsString = "";
 				String notPreassignedStudentsString = "";
@@ -197,14 +190,12 @@ public class GUI {
 						JScrollPane scrollPane = new JScrollPane(textArea);
 						scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 						JOptionPane.showMessageDialog(null, scrollPane, "Students with Preassigned Projects",  JOptionPane.INFORMATION_MESSAGE);
-
 					}else if(listType.toString() == "Not preassigned Students"){
 						textArea.setText(notPreassignedStudentsString);
 						textArea.setEditable(false);
 						JScrollPane scrollPane = new JScrollPane(textArea);
 						scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 						JOptionPane.showMessageDialog(null, scrollPane, "Students without Preassigned Projects",  JOptionPane.INFORMATION_MESSAGE);
-
 					}else if(listType.toString() == "All Students"){
 						textArea.setText(allStudentsString);
 						textArea.setEditable(false);
@@ -213,14 +204,13 @@ public class GUI {
 						JOptionPane.showMessageDialog(null, scrollPane, "All Students",  JOptionPane.INFORMATION_MESSAGE);
 					}
 				}catch(NullPointerException exc){
-
 				}
 			}
 		});
 		btnStudentLists.setForeground(Color.BLACK);
 		btnStudentLists.setBounds(28, 127, 161, 30);
 		frame.getContentPane().add(btnStudentLists);
-
+		
 		JButton btnExit = new JButton("EXIT");
 		btnExit.setToolTipText("I suppose this is goodbye?");
 		btnExit.addActionListener(new ActionListener() {
@@ -231,7 +221,6 @@ public class GUI {
 		btnExit.setForeground(Color.RED);
 		btnExit.setBounds(179, 300, 79, 42);
 		frame.getContentPane().add(btnExit);
-
 		JButton btnAllocateProjects = new JButton("Allocate Projects");
 		btnAllocateProjects.setToolTipText("Will run the better algorith for you");
 		btnAllocateProjects.addActionListener(new ActionListener() {
@@ -242,7 +231,7 @@ public class GUI {
 		btnAllocateProjects.setForeground(Color.RED);
 		btnAllocateProjects.setBounds(263, 30, 141, 42);
 		frame.getContentPane().add(btnAllocateProjects);
-
+		
 		JLabel label = new JLabel("");
 		label.setBounds(54, 38, 46, 14);
 		frame.getContentPane().add(label);
@@ -265,17 +254,14 @@ public class GUI {
 		btnGeneticAlgorithm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				GeneticAlgSolver geneticSolver = new GeneticAlgSolver(table);
-
-
-
-				int[] results = compileResults(solution);
 				CandidateSolution solution = geneticSolver.run();
+				int[] results = compileResults(solution);
 				String unhappyStudents = "";
 
 				if(!(solution.findUnlistedAssignments().isEmpty())){
 					Vector<String> unhappyStudentList = solution.findUnlistedAssignments();
-					for(int i = 0; i < unhappyStudentList.size(); i++){
-						unhappyStudents += unhappyStudentList.get(i + 1) + "\n"; //GA would list student twice so only print every second one
+					for(int i = 0; i < unhappyStudentList.size(); i=i+2){
+						unhappyStudents += unhappyStudentList.get(i) + "\n"; //GA would list student twice so only print every second one
 					}
 					JOptionPane.showMessageDialog(null, "Students that didn't get one their preferences:\n" + unhappyStudents, "Unhappy students:", JOptionPane.INFORMATION_MESSAGE);
 				}
@@ -346,8 +332,7 @@ public class GUI {
 
 		for(int i = 1; i < results.length; i++){ //start at one to ignore num of students
 			float num = (float) results[i]*100/results[0];
-
-			percentage = String.format("%.01f", num);//String.valueOf(num); //Integer.toString(results[i]/results[0]);
+			percentage = String.format("%.01f", num);
 			if(i == 1){
 				output = output + percentage + "% of students got their 1st choice \n";
 			}
@@ -427,7 +412,6 @@ public class GUI {
 		for(int i = 0; i < 9; i++){
 			solution = sa.saSolution();
 			currentEnergy = solution.getEnergy();
-
 			if(currentEnergy < bestEnergy){
 				bestSolution = solution;
 				bestEnergy = currentEnergy;
