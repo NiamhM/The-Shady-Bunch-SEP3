@@ -13,6 +13,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -22,7 +23,7 @@ import javax.swing.ScrollPaneConstants;
 
 public class GUI {
 	private JFrame frame;
-	private static PreferenceTable table = new PreferenceTable("Project allocation Data.TSV");
+	private static PreferenceTable table;
 	private static TreeMap <String, Integer> orderedProjects = new TreeMap<String, Integer>();
 	private JTextField userInputField;
 
@@ -30,7 +31,7 @@ public class GUI {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					GUI window = new GUI("Project allocation data.tsv");
+					GUI window = new GUI();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -39,19 +40,35 @@ public class GUI {
 		});
 	}
 
-	public GUI(String file) { 
-		initialize(file);
+	public GUI() { 
+		initialize();
 	}
 
-	private void initialize(String file) {
-		String fileName = file;
-		table = new PreferenceTable(fileName);
+	private void initialize() {
+		
+		JFileChooser openFile = new JFileChooser();
+		openFile.showOpenDialog(null);
+
+		try{
+			File file = openFile.getSelectedFile();
+			String fileName = file.getName();
+			int index = fileName.lastIndexOf('.');
+			String fileExtension = fileName.substring(index + 1);
+
+			if(fileExtension.equals("tsv")){
+				String filePath = file.getAbsolutePath();
+				table = new PreferenceTable(filePath);
+			}
+			else{
+				JOptionPane.showMessageDialog(openFile, "Invalid choice, must be .tsv\nTry again");
+			}
+		}catch(NullPointerException exception){
+		}
 		Vector<Vector<String>> allprefs = table.getPrefTable();
 		for(Vector<String> line : allprefs){ 		//create hash table in preferenceTable
 			table.addToHash(line.firstElement());	//need hash to use getAllStudentEntries
 		}
 		Vector<StudentEntry> allStudents = table.getAllStuderntEntries();
-		//table.removePreAssignedPreferences();
 		orderedProjects = table.getAllProjects();
 		table.fillPreferencesOfAll(10, orderedProjects);
 		table.getAllProjects();
@@ -201,6 +218,7 @@ public class GUI {
 		frame.getContentPane().add(btnStudentLists);
 
 		JButton btnExit = new JButton("EXIT");
+		btnExit.setToolTipText("I suppose this is goodbye?");
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.exit(0);
@@ -211,6 +229,7 @@ public class GUI {
 		frame.getContentPane().add(btnExit);
 
 		JButton btnAllocateProjects = new JButton("Allocate Projects");
+		btnAllocateProjects.setToolTipText("Will run the better algorith for you");
 		btnAllocateProjects.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				runSimAnn();
@@ -226,7 +245,7 @@ public class GUI {
 
 		JButton btnSimulatedAnnealing = new JButton("Simulated Annealing");
 		btnSimulatedAnnealing.createToolTip();
-		btnSimulatedAnnealing.setToolTipText("Takes around 30-70 seconds");
+		btnSimulatedAnnealing.setToolTipText("Takes under 10 seconds to run");
 		btnSimulatedAnnealing.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				runSimAnn();
@@ -238,13 +257,19 @@ public class GUI {
 
 		JButton btnGeneticAlgorithm = new JButton("Genetic Algorithm");
 		btnGeneticAlgorithm.createToolTip();
-		btnGeneticAlgorithm.setToolTipText("Takes around 1:50 - 2:10 minutes");
+		btnGeneticAlgorithm.setToolTipText("Takes around 40 - 60 seconds to run");
 		btnGeneticAlgorithm.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				GeneticAlgSolver geneticSolver = new GeneticAlgSolver(table);
 
+				
+				
 				int[] results = compileResults(solution);
 				CandidateSolution solution = geneticSolver.run();
+				
+				if(!(solution.findUnlistedAssignments().isEmpty())){
+					JOptionPane.showMessageDialog(null, solution.findUnlistedAssignments(), "Students that didn't get any of their preferences:", JOptionPane.INFORMATION_MESSAGE);
+				}
 				String energy = Integer.toString(geneticSolver.getEnergy());
 				printResult(results,energy,solution);
 			}
@@ -287,38 +312,15 @@ public class GUI {
 		frame.getContentPane().add(separator);
 
 		JButton btnFileSelection = new JButton("Choose New File");
+		btnFileSelection.setToolTipText("Work with a different file");
 		btnFileSelection.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				JFileChooser openFile = new JFileChooser();
-				openFile.showOpenDialog(null);
-
-				try{
-					File file = openFile.getSelectedFile();
-					String fileName = file.getName();
-					int index = fileName.lastIndexOf('.');
-					String fileExtension = fileName.substring(index + 1);
-
-					if(fileExtension.equals("tsv")){
-						initialize(fileName);
-					}
-					else{
-						JOptionPane.showMessageDialog(openFile, "Invalid choice, must be .tsv :(\nTry again or use the default:\nProject allocation data.tsv");
-					}
-				}catch(NullPointerException exception){
-				}
+						initialize();
 			}
 		});
 		
-		btnFileSelection.setBounds(10, 36, 150, 30);
+		btnFileSelection.setBounds(10, 33, 155, 36);
 		frame.getContentPane().add(btnFileSelection);
-
-		JLabel lblDefaultFileProject = new JLabel("Default file: ");
-		lblDefaultFileProject.setBounds(10, 11, 150, 14);
-		frame.getContentPane().add(lblDefaultFileProject);
-
-		JLabel lblProjectAllocationDatatsv = new JLabel("Project allocation data.tsv");
-		lblProjectAllocationDatatsv.setBounds(10, 24, 150, 14);
-		frame.getContentPane().add(lblProjectAllocationDatatsv);
 
 		JLabel lblSearchWhichStudent = new JLabel("Search which students ");
 		lblSearchWhichStudent.setBounds(247, 225, 179, 14);
@@ -424,6 +426,9 @@ public class GUI {
 			}
 				int[] results = compileResults(bestSolution);
 				String energy = Integer.toString(bestEnergy);
+				if(!(bestSolution.findUnlistedAssignments().isEmpty())){
+					JOptionPane.showMessageDialog(null, bestSolution.findUnlistedAssignments(), "Students that didn't get any of their preferences:", JOptionPane.INFORMATION_MESSAGE);
+				}
 				printResult(results,energy,bestSolution);
 	}
 
