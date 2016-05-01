@@ -13,7 +13,6 @@ public void popUp(double numToPop){
 			int timeLeft = 2;
 			public void actionPerformed(ActionEvent e){
 				if(timeLeft > 0){
-					System.out.println(timeLeft + timerDelay);
 					label.setText(test);
 					timeLeft--;
 				}else{
