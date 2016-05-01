@@ -98,7 +98,6 @@ public class PreferenceTable {
 			Vector<String> prefs = student.getOrderedPreference();
 			if(student.hasPreassignedProject() == false){ //if they dont have a preassigned project
 				while(prefs.size() < maxPrefs){
-					//student.addPoject(getRandomPreference());
 					int min = 100;
 					String leastDesirable = null;
 					for(Map.Entry<String,Integer> mapEntry : map.entrySet()) {
@@ -146,8 +145,6 @@ public class PreferenceTable {
 
 		while(iter.hasNext()) {
 			Map.Entry me = (Map.Entry)iter.next();
-			//						System.out.print(me.getKey() + ": ");
-			//						System.out.println(me.getValue());
 		}
 		return projectPopularity;
 	}
@@ -307,37 +304,6 @@ public class PreferenceTable {
 	
 	
 	public static void main(String[] args) throws IOException {
-		PreferenceTable table = new PreferenceTable("Project allocation Data.TSV");	
-		Vector<Vector<String>> allprefs = table.getPrefTable();
-		for(Vector<String> line : allprefs){ 		//create hash table in preferenceTable
-			table.addToHash(line.firstElement());	//need hash to use getAllStudentEntries
-		}
-//		CandidateSolution solution = new CandidateSolution(table);
-//		System.out.println(student.getOrderedPreference());
-//
-//		System.out.println("\nStudent name: "+ student.getStudentName());
-//		System.out.println("Ranking for project 'Recommending Movies Using Curated IMDb Lists' is: "+student.getRanking("Recommending Movies Using Curated IMDb Lists"));
-//		System.out.println("Ranking for project 'Spotting Plagiarised Essays Economically' is: "+student.getRanking("Spotting Plagiarised Essays Economically"));
-//		System.out.println("Ranking for project 'Learning to play Whist by Bayesian Network' is: "+student.getRanking("Learning to play Whist by Bayesian Network  "));		
-//		System.out.println("Ranking for project 'Script Buddy' is: " + student.getRanking("Script Buddy") + "\n");
-//
-//		System.out.println("CandidateAssignment name" + cand.getStudentEntry().getStudentName());
-//		System.out.println("Energy for assigned project " + cand.getAssignedProject() + " is: " + cand.getEnergy());
-//		System.out.println("Assigning new random project");
-//		cand.randomiseAssignment();
-//		System.out.println("\nEnergy for assigned project " + cand.getAssignedProject() + " is: " + cand.getEnergy());
-		Vector<StudentEntry> allStudents = table.getAllStuderntEntries();
-		allPreassignedProjects = table.findPreassignedProjects(allStudents);
-
-		table.removePreAssignedPreferences();
-		TreeMap <String, Integer> orderedProjects = new TreeMap<String, Integer>();
-		orderedProjects = table.getAllProjects();
-		table.fillPreferencesOfAll(10, orderedProjects);
-//		StudentEntry testStudent2 = table.getEntryFor("Mr. Darcy");
-//		System.out.println(testStudent2.getOrderedPreference().size());
-//		StudentEntry student = new StudentEntry("Mr. Darcy");
-		CandidateSolution solution = new CandidateSolution(table);
-		System.out.println("Students With unlisted projects: " + solution.findUnlistedAssignments());
 
 	}
 }
