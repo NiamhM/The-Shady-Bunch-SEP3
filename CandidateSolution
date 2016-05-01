@@ -4,20 +4,16 @@ import java.util.Random;
 import java.util.Vector;
 
 public class CandidateSolution {
-	PreferenceTable pref;
+	PreferenceTable preferenceTable;
 	private Vector<String> studentsAssignedUnlistedProject = new Vector<String>();
 	private Vector<CandidateAssignment> allCandidates = new Vector<CandidateAssignment>();
 	private static final int DUPLICATE_PROJECT_PENALTY = 1000;
 	Random randomNumber = new Random();
 	
 	public CandidateSolution(PreferenceTable p){
-		pref  = p;
-		Vector<Vector<String>> allPrefs = PreferenceTable.getPrefTable();
-//		for(Vector<String> line : allPrefs){ 		//create hash table in preferenceTable
-//			pref.addToHash(line.firstElement());	//need hash to use getAllStudentEntries
-//		}
-		pref.getHashtable();
-		Vector<StudentEntry> studentEntryList = pref.getAllStuderntEntries();
+		preferenceTable  = p;
+		//preferenceTable.getHashtable();
+		Vector<StudentEntry> studentEntryList = preferenceTable.getAllStuderntEntries();
 		for(StudentEntry student : studentEntryList){		//creating list of candidate assignments
 			CandidateAssignment cand = new CandidateAssignment(student);
 			allCandidates.addElement(cand);
@@ -34,10 +30,8 @@ public class CandidateSolution {
 		return studentsAssignedUnlistedProject;
 	}
 	
-	
-	
 	public String getAssignmentFor(String studentName){
-		Hashtable<String, StudentEntry> myHash = pref.getHashtable();
+		Hashtable<String, StudentEntry> myHash = preferenceTable.getHashtable();
 		StudentEntry student = myHash.get(studentName);
 		String assignment = "";
 		for(CandidateAssignment can : allCandidates){
@@ -49,25 +43,22 @@ public class CandidateSolution {
 	}
 	
 	public String getRandomAssignment(){
-		StudentEntry randStudent = pref.getRandomStudent();
-		return getAssignmentFor(randStudent.getStudentName());
+		StudentEntry randomStudent = preferenceTable.getRandomStudent();
+		return getAssignmentFor(randomStudent.getStudentName());
 	}
 	
 	public int getEnergy(){
 		int energy = 0;
 		int penalty = 0;
 		String project;
-		//Hashtable<StudentEntry,String> hash = new Hashtable<StudentEntry,String>();
-		Vector<String> projectsAssigned = new Vector<>();
+		Vector<String> projectsAssigned = new Vector<String>();
 		
 		for(CandidateAssignment cand: allCandidates){
 			energy = energy + cand.getEnergy();
 			project = cand.getAssignedProject();
-			//if(hash.containsValue(project)){ 
 			if(projectsAssigned.contains(project)){
 				penalty += DUPLICATE_PROJECT_PENALTY;
 			}
-			//hash.put(cand.getStudentEntry(), cand.getAssignedProject());
 			projectsAssigned.add(cand.getAssignedProject());
 		}
 		return energy + penalty;
@@ -91,20 +82,16 @@ public class CandidateSolution {
 	}
 	
 	public CandidateSolution combineSolutions(CandidateSolution secondCandidate){
-		CandidateSolution newCandidate = new CandidateSolution(pref);
+		CandidateSolution newCandidate = new CandidateSolution(preferenceTable);
 		newCandidate.allCandidates.clear();
-//		CandidateAssignment tempAssignment = allCandidates.get(0);
-//		newCandidate.allCandidates.add(tempAssignment);
-		int energyOne;//= newCandidate.getEnergy();
+		int energyOne;
 		int energyTwo;
-		newCandidate.allCandidates.clear();
 		for(int i = 0; i < allCandidates.size(); i++){
 			CandidateAssignment tempAssignment = allCandidates.get(i);
 			CandidateAssignment tempAssignment2 = secondCandidate.allCandidates.get(i);
 			newCandidate.allCandidates.add(tempAssignment);
 			energyOne = newCandidate.getEnergy();
 			newCandidate.allCandidates.remove(tempAssignment);
-			
 			newCandidate.allCandidates.add(tempAssignment2);
 			energyTwo = newCandidate.getEnergy();
 			if(energyOne < energyTwo){
