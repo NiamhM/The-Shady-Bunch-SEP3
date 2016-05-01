@@ -1,7 +1,5 @@
 import java.util.*;
 
-import javax.print.attribute.ResolutionSyntax;
-
 public class SimulatedAnnealing {
 	private CandidateSolution cs;
 	PopUpWindow p = new PopUpWindow();
@@ -30,7 +28,6 @@ public class SimulatedAnnealing {
 			if(newEnergy >= energy && !(boltzmann(temperature, changeInEnergy))){
 				c.undoChange();
 			}
-
 			else{
 				energy = newEnergy;
 			}
