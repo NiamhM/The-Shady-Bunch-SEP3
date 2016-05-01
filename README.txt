@@ -19,7 +19,7 @@ Note on Energy
 ---------------
 If you've run the program to get a mapping you would have seen a figure called "energy".
 This calculated using energy = (The rank of the project assigned + 1)*(The rank of the project assigned + 1)
-For the rank if someone were to get their first choice the ranking would be 1 so their energy would be 4.
+For the rank if someone were to get their first choice the ranking would be 0 so their energy would be 1.
 
 ---------------
 Latest Version
