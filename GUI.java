@@ -229,7 +229,7 @@ public class GUI {
 			}
 		});
 		btnAllocateProjects.setForeground(Color.RED);
-		btnAllocateProjects.setBounds(263, 30, 141, 42);
+		btnAllocateProjects.setBounds(247, 30, 150, 42);
 		frame.getContentPane().add(btnAllocateProjects);
 		
 		JLabel label = new JLabel("");
@@ -313,8 +313,7 @@ public class GUI {
 				initialize();
 			}
 		});
-
-		btnFileSelection.setBounds(10, 33, 155, 36);
+		btnFileSelection.setBounds(28, 33, 155, 36);
 		frame.getContentPane().add(btnFileSelection);
 
 		JLabel lblSearchWhichStudent = new JLabel("Search which students ");
