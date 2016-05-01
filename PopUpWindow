@@ -5,11 +5,10 @@ import java.awt.event.*;
 
 public class PopUpWindow{	
   @SuppressWarnings("serial")
-public void popUp(double j){
+public void popUp(double numToPop){
 	  	final JLabel label = new JLabel();
 		int timerDelay = 500;
-		String test = j +"% COMPLETED!";
-		
+		String test = numToPop +"% COMPLETED!";
 		new Timer(timerDelay, new ActionListener(){
 			int timeLeft = 2;
 			public void actionPerformed(ActionEvent e){
@@ -30,5 +29,5 @@ public void popUp(double j){
 			}
 		}){{setInitialDelay(0);}}.start();
 			JOptionPane.showMessageDialog(null, label);	
-		}
+	}
 }
