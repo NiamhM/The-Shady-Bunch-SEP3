@@ -13,7 +13,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -26,6 +25,7 @@ public class GUI {
 	private static PreferenceTable table;
 	private static TreeMap <String, Integer> orderedProjects = new TreeMap<String, Integer>();
 	private JTextField userInputField;
+	private Boolean programStart = true;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -45,10 +45,9 @@ public class GUI {
 	}
 
 	private void initialize() {
-		
+
 		JFileChooser openFile = new JFileChooser();
 		openFile.showOpenDialog(null);
-
 		try{
 			File file = openFile.getSelectedFile();
 			String fileName = file.getName();
@@ -61,14 +60,19 @@ public class GUI {
 			}
 			else{
 				JOptionPane.showMessageDialog(openFile, "Invalid choice, must be .tsv\nTry again");
+				initialize();
 			}
 		}catch(NullPointerException exception){
+			if(programStart == true){
+				System.exit(0); //If they cancel choosing the initial file, exit
+			}
 		}
-		Vector<Vector<String>> allprefs = table.getPrefTable();
+
+		Vector<Vector<String>> allprefs = PreferenceTable.getPrefTable();
 		for(Vector<String> line : allprefs){ 		//create hash table in preferenceTable
 			table.addToHash(line.firstElement());	//need hash to use getAllStudentEntries
 		}
-		Vector<StudentEntry> allStudents = table.getAllStuderntEntries();
+		programStart = false; //Program has started so if they want to choose a new file we don't care if they cancel
 		orderedProjects = table.getAllProjects();
 		table.fillPreferencesOfAll(10, orderedProjects);
 		table.getAllProjects();
@@ -245,7 +249,7 @@ public class GUI {
 
 		JButton btnSimulatedAnnealing = new JButton("Simulated Annealing");
 		btnSimulatedAnnealing.createToolTip();
-		btnSimulatedAnnealing.setToolTipText("Takes under 10 seconds to run");
+		btnSimulatedAnnealing.setToolTipText("Takes under 15 seconds to run");
 		btnSimulatedAnnealing.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				runSimAnn();
@@ -262,13 +266,18 @@ public class GUI {
 			public void actionPerformed(ActionEvent e) {
 				GeneticAlgSolver geneticSolver = new GeneticAlgSolver(table);
 
-				
-				
+
+
 				int[] results = compileResults(solution);
 				CandidateSolution solution = geneticSolver.run();
-				
+				String unhappyStudents = "";
+
 				if(!(solution.findUnlistedAssignments().isEmpty())){
-					JOptionPane.showMessageDialog(null, solution.findUnlistedAssignments(), "Students that didn't get any of their preferences:", JOptionPane.INFORMATION_MESSAGE);
+					Vector<String> unhappyStudentList = solution.findUnlistedAssignments();
+					for(int i = 0; i < unhappyStudentList.size(); i++){
+						unhappyStudents += unhappyStudentList.get(i + 1) + "\n"; //GA would list student twice so only print every second one
+					}
+					JOptionPane.showMessageDialog(null, "Students that didn't get one their preferences:\n" + unhappyStudents, "Unhappy students:", JOptionPane.INFORMATION_MESSAGE);
 				}
 				String energy = Integer.toString(geneticSolver.getEnergy());
 				printResult(results,energy,solution);
@@ -315,10 +324,10 @@ public class GUI {
 		btnFileSelection.setToolTipText("Work with a different file");
 		btnFileSelection.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-						initialize();
+				initialize();
 			}
 		});
-		
+
 		btnFileSelection.setBounds(10, 33, 155, 36);
 		frame.getContentPane().add(btnFileSelection);
 
@@ -409,27 +418,32 @@ public class GUI {
 		return results;
 	}
 
-	private void runSimAnn(){
-			SimulatedAnnealing sa = new SimulatedAnnealing(table);
-			CandidateSolution bestSolution = sa.saSolution();
-			CandidateSolution solution;
-			int bestEnergy = bestSolution.getEnergy();
-			int currentEnergy;
-			for(int i = 0; i < 9; i++){
-				solution = sa.saSolution();
-				currentEnergy = solution.getEnergy();
+	private void runSimAnn(){ //Method created to be called by SA button AND Allocate Projects button
+		SimulatedAnnealing sa = new SimulatedAnnealing(table);
+		CandidateSolution bestSolution = sa.saSolution();
+		CandidateSolution solution;
+		int bestEnergy = bestSolution.getEnergy();
+		int currentEnergy;
+		for(int i = 0; i < 9; i++){
+			solution = sa.saSolution();
+			currentEnergy = solution.getEnergy();
 
-				if(currentEnergy < bestEnergy){
-					bestSolution = solution;
-					bestEnergy = currentEnergy;
-				}
+			if(currentEnergy < bestEnergy){
+				bestSolution = solution;
+				bestEnergy = currentEnergy;
 			}
-				int[] results = compileResults(bestSolution);
-				String energy = Integer.toString(bestEnergy);
-				if(!(bestSolution.findUnlistedAssignments().isEmpty())){
-					JOptionPane.showMessageDialog(null, bestSolution.findUnlistedAssignments(), "Students that didn't get any of their preferences:", JOptionPane.INFORMATION_MESSAGE);
-				}
-				printResult(results,energy,bestSolution);
+		}
+		int[] results = compileResults(bestSolution);
+		String energy = Integer.toString(bestEnergy);
+		String unhappyStudents = "";
+		if(!(bestSolution.findUnlistedAssignments().isEmpty())){
+			Vector<String> unhappyStudentList = bestSolution.findUnlistedAssignments();
+			for(int i = 0; i < unhappyStudentList.size(); i++){
+				unhappyStudents += unhappyStudentList.get(i) + "\n";
+			}
+			JOptionPane.showMessageDialog(null, "Students that didn't get one their preferences:\n" + unhappyStudents + "\n", "Unhappy students", JOptionPane.INFORMATION_MESSAGE);
+		}
+		printResult(results,energy,bestSolution);
 	}
 
 	private void save(CandidateSolution solution){
